@@ -8,12 +8,42 @@ class AppTheme {
   static const String font = 'Poppins';
 
   static const lightTextTheme = TextTheme(
-    headlineLarge: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Color(0xFF242424)),
-    headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF242424)),
-    headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF242424)),
-    bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Color(0xFF242424)),
-    bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xFF242424)),
-    bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xFF242424)),
+    headlineLarge: TextStyle(
+      fontSize: 48,
+      fontWeight: FontWeight.bold,
+      color: Color(0xFF242424),
+      height: 1,
+    ),
+    headlineMedium: TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+      color: Color(0xFF242424),
+      height: 1,
+    ),
+    headlineSmall: TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      color: Color(0xFF242424),
+      height: 1,
+    ),
+    bodyLarge: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.normal,
+      color: Color(0xFF242424),
+      height: 1,
+    ),
+    bodyMedium: TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.normal,
+      color: Color(0xFF242424),
+      height: 1,
+    ),
+    bodySmall: TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.normal,
+      color: Color(0xFF242424),
+      height: 1,
+    ),
   );
 
   static const darkTextTheme = TextTheme();
@@ -35,6 +65,7 @@ class AppTheme {
     ),
     appBarTheme: const AppBarTheme(
       centerTitle: true,
+      backgroundColor: Colors.white,
     ),
     hintColor: const Color(0xFFD9D9D9),
     focusColor: const Color(0xFF008DDA),
