@@ -33,12 +33,62 @@ class AppTheme {
       onBackground: Color(0xFF242424),
       onError: Color(0xFFFFFFFF),
     ),
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       centerTitle: true,
     ),
     hintColor: const Color(0xFFD9D9D9),
     focusColor: const Color(0xFF008DDA),
     textTheme: lightTextTheme,
     fontFamily: font,
+    inputDecorationTheme: const InputDecorationTheme(
+      isDense: true,
+      contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+      prefixIconColor: Color(0xFF242424),
+      labelStyle: TextStyle(
+        color: Color(0xFF242424),
+        fontFamily: font,
+      ),
+      hintStyle: TextStyle(
+        color: Color(0xFFD9D9D9),
+        fontFamily: font,
+        fontWeight: FontWeight.w300,
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0xFFD9D9D9),
+          width: 2,
+        ),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0xFF008DDA),
+          width: 2,
+        ),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0xFFD9D9D9),
+          width: 2,
+        ),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF008DDA)),
+        overlayColor: MaterialStateProperty.all<Color>(const Color(0xFF005F8A)),
+        foregroundColor: MaterialStateProperty.all<Color>(const Color(0xFFFFFFFF)),
+        textStyle: MaterialStateProperty.all<TextStyle>(
+          const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: font,
+          ),
+        ),
+        padding:
+            MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.symmetric(horizontal: 10, vertical: 15)),
+        shape:
+            MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+      ),
+    ),
   );
 }
