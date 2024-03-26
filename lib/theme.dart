@@ -51,6 +51,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: const Color(0xFF008DDA),
+    scaffoldBackgroundColor: Colors.white,
     colorScheme: const ColorScheme.light(
       primary: Color(0xFF008DDA),
       secondary: Color(0xFF242424),
@@ -66,6 +67,7 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       backgroundColor: Colors.white,
+      scrolledUnderElevation: 0.0,
     ),
     hintColor: const Color(0xFFD9D9D9),
     focusColor: const Color(0xFF008DDA),

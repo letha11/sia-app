@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).push(
+                            Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (_) => const HomePage(),
                               ),
