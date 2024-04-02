@@ -21,12 +21,13 @@ class AuthRepository extends AuthRepositoryA {
     required String password,
   }) async {
     try {
+      final formData = FormData.fromMap({
+        'username': username,
+        'password': password,
+      });
       final response = await _dioClient.dio.post(
         '/login',
-        data: {
-          username: username,
-          password: password,
-        },
+        data: formData,
       );
 
       final String token = response.data['token'];
@@ -35,8 +36,8 @@ class AuthRepository extends AuthRepositoryA {
     } on DioException catch (e) {
       final response = e.response;
 
-      if(response?.statusCode == 400) return Left(InvalidInput());
-      if(response?.statusCode == 401) return Left(InvalidCredentials());
+      if (response?.statusCode == 400) return Left(InvalidInput());
+      if (response?.statusCode == 401) return Left(InvalidCredentials());
 
       return Left(UnhandledFailure(e));
     } catch (e) {

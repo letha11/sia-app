@@ -73,34 +73,43 @@ class AppTheme {
     focusColor: const Color(0xFF008DDA),
     textTheme: lightTextTheme,
     fontFamily: font,
-    inputDecorationTheme: const InputDecorationTheme(
+    inputDecorationTheme: InputDecorationTheme(
       isDense: true,
-      contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-      prefixIconColor: Color(0xFF242424),
-      labelStyle: TextStyle(
+      contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      prefixIconColor: const Color(0xFF242424),
+      suffixStyle: const TextStyle(
+        color: Color(0xFF242424),
+      ),
+      labelStyle: const TextStyle(
         color: Color(0xFF242424),
         fontFamily: font,
       ),
-      hintStyle: TextStyle(
+      hintStyle: const TextStyle(
         color: Color(0xFFD9D9D9),
         fontFamily: font,
         fontWeight: FontWeight.w300,
       ),
-      border: UnderlineInputBorder(
+      border: const UnderlineInputBorder(
         borderSide: BorderSide(
           color: Color(0xFFD9D9D9),
           width: 2,
         ),
       ),
-      focusedBorder: UnderlineInputBorder(
+      focusedBorder: const UnderlineInputBorder(
         borderSide: BorderSide(
           color: Color(0xFF008DDA),
           width: 2,
         ),
       ),
-      enabledBorder: UnderlineInputBorder(
+      enabledBorder: const UnderlineInputBorder(
         borderSide: BorderSide(
           color: Color(0xFFD9D9D9),
+          width: 2,
+        ),
+      ),
+      disabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: const Color(0xFFD9D9D9).withOpacity(0.35),
           width: 2,
         ),
       ),
