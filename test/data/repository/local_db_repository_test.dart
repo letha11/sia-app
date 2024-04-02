@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:sia_app/data/repository/local_db_repository.dart';
+import 'package:sia_app/data/repository/local/local_db_repository.dart';
 
 @GenerateNiceMocks([MockSpec<HiveInterface>()])
 import 'local_db_repository_test.mocks.dart';

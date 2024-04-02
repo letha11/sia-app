@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:sia_app/data/repository/local_db_repository.dart';
+import 'package:sia_app/data/repository/local/local_db_repository.dart';
 import 'package:sia_app/utils/constants.dart';
 
 class DioClient {
@@ -15,7 +15,6 @@ class DioClient {
     required LocalDBRepository localDBRepository,
   }) {
     _dio = dio ?? Dio(_options);
-    _dio.interceptors.add(_tokenInterceptor());
     _localDB = localDBRepository;
   }
 
@@ -27,4 +26,10 @@ class DioClient {
       );
 
   Dio get dio => _dio;
+
+  Dio get dioWithToken {
+    _dio.interceptors.add(_tokenInterceptor());
+
+    return _dio;
+  }
 }
