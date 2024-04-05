@@ -9,4 +9,6 @@ final class Login extends AuthEvent {
   Login({required this.username, required this.password});
 }
 
+final class Logout extends AuthEvent {}
+
 final class AuthCheckStatus extends AuthEvent {}

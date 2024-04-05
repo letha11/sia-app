@@ -15,8 +15,17 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
+  NavigatorState get _navigator => _navigatorKey.currentState!;
 
   @override
   Widget build(BuildContext context) {
@@ -27,35 +36,43 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        navigatorKey: _navigatorKey,
         title: 'Flutter Demo',
         theme: AppTheme.lightTheme,
         themeMode: ThemeMode.light,
-        home: FutureBuilder(
+        builder: (context, child) => FutureBuilder(
           future: sl.allReady(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return BlocListener<AuthBloc, AuthState>(
                 listener: (_, state) {
                   if (state is AuthAuthenticated) {
-                    Navigator.of(context).pushReplacement(
+                    _navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (_) => const HomePage(),
                       ),
+                      (_) => false,
                     );
                   } else if (state is AuthUnauthenticated) {
-                    Navigator.of(context).pushReplacement(
+                    _navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (_) => const LoginPage(),
                       ),
+                      (_) => false,
                     );
                   }
                 },
-                child: Container(color: Colors.white),
+                child: child!,
               );
             }
 
-            return Container(color: Colors.white);
+            return child!;
           },
+        ),
+        onGenerateRoute: (_) => MaterialPageRoute(
+          builder: (_) => Container(
+              color: Colors
+                  .white), // TODO: should be changed to splash screen / splash page
         ),
       ),
     );

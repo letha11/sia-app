@@ -23,6 +23,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         super(AuthInitial()) {
     on<Login>(_onLogin);
     on<AuthCheckStatus>(_onAuthCheckStatus);
+    on<Logout>(_onLogout);
+  }
+
+  _onLogout(Logout event, Emitter<AuthState> emit) async {
+    await _localDBRepository.remove(HiveKey.accessToken);
+    await _localDBRepository.remove(HiveKey.refreshToken);
+
+    emit(AuthUnauthenticated());
   }
 
   _onAuthCheckStatus(AuthCheckStatus event, Emitter<AuthState> emit) async {

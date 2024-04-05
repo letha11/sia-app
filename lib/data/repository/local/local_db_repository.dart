@@ -7,6 +7,9 @@ abstract class LocalDBRepositoryA {
 
   /// `key` only accepts `String` and `HiveKey` type
   store(dynamic key, dynamic value);
+
+  /// `key` only accepts `String` and `HiveKey` type
+  remove(dynamic key);
 }
 
 class LocalDBRepository extends LocalDBRepositoryA {
@@ -31,7 +34,9 @@ class LocalDBRepository extends LocalDBRepositoryA {
 
   @override
   get(key) {
-    if (key is! String && key is! HiveKey) throw ArgumentError("Key should be type of `string` or `HiveKey`");
+    if (key is! String && key is! HiveKey) {
+      throw ArgumentError("Key should be type of `string` or `HiveKey`");
+    }
     if (key is HiveKey) key = key.valueAsString;
 
     return _box.get(key);
@@ -39,9 +44,21 @@ class LocalDBRepository extends LocalDBRepositoryA {
 
   @override
   store(key, value) async {
-    if (key is! String && key is! HiveKey) throw ArgumentError("Key should be type of `string` or `HiveKey`");
+    if (key is! String && key is! HiveKey) {
+      throw ArgumentError("Key should be type of `string` or `HiveKey`");
+    }
     if (key is HiveKey) key = key.valueAsString;
 
     await _box.put(key, value);
+  }
+
+  @override
+  remove(key) async {
+    if (key is! String && key is! HiveKey) {
+      throw ArgumentError("Key should be type of `string` or `HiveKey`");
+    }
+    if (key is HiveKey) key = key.valueAsString;
+
+    await _box.delete(key);
   }
 }

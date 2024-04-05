@@ -45,7 +45,7 @@ class MockLocalDBRepository extends _i1.Mock implements _i2.LocalDBRepository {
 /// See the documentation for Mockito's code generation for more information.
 class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
   @override
-  _i3.Future<_i5.Either<_i6.Failure, String>> login({
+  _i3.Future<_i5.Either<_i6.Failure, (String, String)>> login({
     required String? username,
     required String? password,
   }) =>
@@ -58,8 +58,9 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
             #password: password,
           },
         ),
-        returnValue: _i3.Future<_i5.Either<_i6.Failure, String>>.value(
-            _i7.dummyValue<_i5.Either<_i6.Failure, String>>(
+        returnValue:
+            _i3.Future<_i5.Either<_i6.Failure, (String, String)>>.value(
+                _i7.dummyValue<_i5.Either<_i6.Failure, (String, String)>>(
           this,
           Invocation.method(
             #login,
@@ -71,8 +72,8 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
           ),
         )),
         returnValueForMissingStub:
-            _i3.Future<_i5.Either<_i6.Failure, String>>.value(
-                _i7.dummyValue<_i5.Either<_i6.Failure, String>>(
+            _i3.Future<_i5.Either<_i6.Failure, (String, String)>>.value(
+                _i7.dummyValue<_i5.Either<_i6.Failure, (String, String)>>(
           this,
           Invocation.method(
             #login,
@@ -83,5 +84,32 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
             },
           ),
         )),
-      ) as _i3.Future<_i5.Either<_i6.Failure, String>>);
+      ) as _i3.Future<_i5.Either<_i6.Failure, (String, String)>>);
+
+  @override
+  _i3.Future<_i5.Either<_i6.Failure, (String, String)>> refreshToken() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #refreshToken,
+          [],
+        ),
+        returnValue:
+            _i3.Future<_i5.Either<_i6.Failure, (String, String)>>.value(
+                _i7.dummyValue<_i5.Either<_i6.Failure, (String, String)>>(
+          this,
+          Invocation.method(
+            #refreshToken,
+            [],
+          ),
+        )),
+        returnValueForMissingStub:
+            _i3.Future<_i5.Either<_i6.Failure, (String, String)>>.value(
+                _i7.dummyValue<_i5.Either<_i6.Failure, (String, String)>>(
+          this,
+          Invocation.method(
+            #refreshToken,
+            [],
+          ),
+        )),
+      ) as _i3.Future<_i5.Either<_i6.Failure, (String, String)>>);
 }

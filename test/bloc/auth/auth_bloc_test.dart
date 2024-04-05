@@ -12,7 +12,7 @@ import 'package:sia_app/data/repository/local/local_db_repository.dart';
 import 'auth_bloc_test.mocks.dart';
 
 void main() {
-  provideDummy<Either<Failure, String>>(Left(InvalidCredentials()));
+  provideDummy<Either<Failure, (String, String)>>(Left(InvalidCredentials()));
 
   late MockAuthRepository authRepository;
   late MockLocalDBRepository localDBRepository;
@@ -31,36 +31,53 @@ void main() {
   group('constructor', () {
     test('work', () {
       expect(
-        AuthBloc(authRepository: authRepository, localDBRepository: localDBRepository),
+        AuthBloc(
+            authRepository: authRepository,
+            localDBRepository: localDBRepository),
         isA<AuthBloc>(),
       );
     });
   });
 
-  group('AuthCheckStatus', () {
+  group('Logout', () {
     blocTest(
-      'should emit [AuthUnauthenticated] when `accessToken` doesn\' exists in localDBRepository',
+      'should emit [AuthUnauthenticated]',
       build: () => bloc,
-      act: (b) => b.add(AuthCheckStatus()),
+      act: (b) => b.add(Logout()),
       setUp: () {
-        when(localDBRepository.get(any)).thenReturn(null);
+        when(localDBRepository.remove(any)).thenReturn(null);
+      },
+      verify: (_) {
+        verify(localDBRepository.remove(any)).called(2);
       },
       expect: () => [
         AuthUnauthenticated(),
-      ]
+      ],
     );
+  });
+
+  group('AuthCheckStatus', () {
+    blocTest(
+        'should emit [AuthUnauthenticated] when `accessToken` doesn\' exists in localDBRepository',
+        build: () => bloc,
+        act: (b) => b.add(AuthCheckStatus()),
+        setUp: () {
+          when(localDBRepository.get(any)).thenReturn(null);
+        },
+        expect: () => [
+              AuthUnauthenticated(),
+            ]);
 
     blocTest(
-      'should emit [AuthAuthenticated] when `accessToken` exists in localDBRepository',
-      build: () => bloc,
-      act: (b) => b.add(AuthCheckStatus()),
-      setUp: () {
-        when(localDBRepository.get(any)).thenReturn('token is here!');
-      },
-      expect: () => [
-        AuthAuthenticated(),
-      ]
-    );
+        'should emit [AuthAuthenticated] when `accessToken` exists in localDBRepository',
+        build: () => bloc,
+        act: (b) => b.add(AuthCheckStatus()),
+        setUp: () {
+          when(localDBRepository.get(any)).thenReturn('token is here!');
+        },
+        expect: () => [
+              AuthAuthenticated(),
+            ]);
   });
 
   group('Login', () {
@@ -120,10 +137,10 @@ void main() {
         when(authRepository.login(
           username: anyNamed('username'),
           password: anyNamed('password'),
-        )).thenAnswer((_) async => const Right('asd'));
+        )).thenAnswer((_) async => const Right(('token', 'refreshToken')));
       },
       verify: (_) {
-        verify(localDBRepository.store(any, any)).called(1);
+        verify(localDBRepository.store(any, any)).called(2);
       },
       expect: () => <AuthState>[
         AuthLoading(),
