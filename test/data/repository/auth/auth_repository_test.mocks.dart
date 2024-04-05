@@ -51,6 +51,19 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
       ) as _i2.Dio);
 
   @override
+  _i2.Dio get dioWithRefreshToken => (super.noSuchMethod(
+        Invocation.getter(#dioWithRefreshToken),
+        returnValue: _FakeDio_0(
+          this,
+          Invocation.getter(#dioWithRefreshToken),
+        ),
+        returnValueForMissingStub: _FakeDio_0(
+          this,
+          Invocation.getter(#dioWithRefreshToken),
+        ),
+      ) as _i2.Dio);
+
+  @override
   _i2.Dio get dioWithToken => (super.noSuchMethod(
         Invocation.getter(#dioWithToken),
         returnValue: _FakeDio_0(

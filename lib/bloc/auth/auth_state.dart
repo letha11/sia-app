@@ -22,8 +22,9 @@ final class AuthSuccess extends AuthState {
 
 final class AuthFailed extends AuthState {
   final String errorMessage;
+  final Failure? error;
 
-  AuthFailed({required this.errorMessage});
+  AuthFailed({required this.errorMessage, this.error});
 
   @override
   List<Object?> get props => [];

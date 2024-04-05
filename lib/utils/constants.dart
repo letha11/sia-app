@@ -1,5 +1,6 @@
 enum HiveKey {
   accessToken,
+  refreshToken,
 }
 
 extension HiveKeyX on HiveKey {

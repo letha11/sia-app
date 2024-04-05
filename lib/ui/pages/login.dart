@@ -28,9 +28,17 @@ class _LoginPageState extends State<LoginPage> {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is AuthFailed) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
                       content: Text(state.errorMessage),
+                      title: Text(state.error?.toString() ?? "Error"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Ok'),
+                        ),
+                      ],
                     ),
                   );
                 } else if (state is AuthSuccess) {
@@ -64,7 +72,10 @@ class _LoginPageState extends State<LoginPage> {
                               }
                               return null;
                             },
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.w300,
                                 ),
                             decoration: InputDecoration(
@@ -72,11 +83,17 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.only(right: 2.0),
                                 child: Icon(
                                   Icons.person,
-                                  color: _isLoading ? Theme.of(context).colorScheme.onSurface.withOpacity(0.35) : null,
+                                  color: _isLoading
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withOpacity(0.35)
+                                      : null,
                                   size: 24,
                                 ),
                               ),
-                              prefixIconConstraints: const BoxConstraints(minWidth: 38),
+                              prefixIconConstraints:
+                                  const BoxConstraints(minWidth: 38),
                               labelText: 'NIM',
                               hintText: '41522013123',
                             ),
@@ -93,7 +110,10 @@ class _LoginPageState extends State<LoginPage> {
                               }
                               return null;
                             },
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.w300,
                                 ),
                             decoration: InputDecoration(
@@ -101,11 +121,17 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.only(right: 2.0),
                                 child: Icon(
                                   Icons.lock,
-                                  color: _isLoading ? Theme.of(context).colorScheme.onSurface.withOpacity(0.35) : null,
+                                  color: _isLoading
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withOpacity(0.35)
+                                      : null,
                                   size: 24,
                                 ),
                               ),
-                              prefixIconConstraints: const BoxConstraints(minWidth: 38),
+                              prefixIconConstraints:
+                                  const BoxConstraints(minWidth: 38),
                               suffixIcon: Material(
                                 color: Colors.transparent,
                                 shape: const CircleBorder(),
@@ -119,12 +145,16 @@ class _LoginPageState extends State<LoginPage> {
                                   child: _showPassword
                                       ? Icon(
                                           Icons.visibility,
-                                          color: Theme.of(context).colorScheme.onSurface,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
                                           size: 24,
                                         )
                                       : Icon(
                                           Icons.visibility_off,
-                                          color: Theme.of(context).colorScheme.onSurface,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
                                           size: 24,
                                         ),
                                 ),
@@ -142,8 +172,10 @@ class _LoginPageState extends State<LoginPage> {
                                       if (_formKey.currentState!.validate()) {
                                         context.read<AuthBloc>().add(
                                               Login(
-                                                username: _usernameController.text,
-                                                password: _passwordController.text,
+                                                username:
+                                                    _usernameController.text,
+                                                password:
+                                                    _passwordController.text,
                                               ),
                                             );
                                       }
@@ -158,7 +190,9 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     )
                                   : CircularProgressIndicator(
-                                      color: Theme.of(context).colorScheme.onPrimary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
                                     ),
                             ),
                           ),

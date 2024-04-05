@@ -20,12 +20,27 @@ class DioClient {
 
   InterceptorsWrapper _tokenInterceptor() => InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
-          options.headers['Authorization'] = 'Bearer ${_localDB.get(HiveKey.accessToken)}';
+          options.headers['Authorization'] =
+              'Bearer ${_localDB.get(HiveKey.accessToken)}';
+          return handler.next(options);
+        },
+      );
+
+  InterceptorsWrapper _refreshTokenInterceptor() => InterceptorsWrapper(
+        onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+          options.headers['Authorization'] =
+              'Bearer ${_localDB.get(HiveKey.refreshToken)}';
           return handler.next(options);
         },
       );
 
   Dio get dio => _dio;
+
+  Dio get dioWithRefreshToken {
+    _dio.interceptors.add(_refreshTokenInterceptor());
+
+    return _dio;
+  }
 
   Dio get dioWithToken {
     _dio.interceptors.add(_tokenInterceptor());

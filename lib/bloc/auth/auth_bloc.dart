@@ -1,7 +1,8 @@
+import 'dart:ffi';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-import 'package:sia_app/core/dio_client.dart';
+import 'package:flutter/material.dart';
 import 'package:sia_app/core/failures.dart';
 import 'package:sia_app/data/repository/auth/auth_repository.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';
@@ -25,9 +26,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   _onAuthCheckStatus(AuthCheckStatus event, Emitter<AuthState> emit) async {
-    final String? token = await _localDBRepository.get(HiveKey.accessToken);
+    final String? token = await _localDBRepository.get(HiveKey.refreshToken);
 
-    if(token != null && token.isNotEmpty) {
+    if (token != null && token.isNotEmpty) {
       emit(AuthAuthenticated());
     } else {
       emit(AuthUnauthenticated());
@@ -46,21 +47,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (err) {
         if (err is InvalidInput) {
           emit(
-            AuthFailed(errorMessage: 'Username dan Password tidak boleh kosong'),
+            AuthFailed(
+              error: err,
+              errorMessage: 'Username dan Password tidak boleh kosong',
+            ),
           );
         } else if (err is InvalidCredentials) {
           emit(
-            AuthFailed(errorMessage: 'Username atau password salah, silahkan coba lagi'),
+            AuthFailed(
+              error: err,
+              errorMessage: 'Username atau password salah, silahkan coba lagi',
+            ),
           );
         } else {
           final message = (err as UnhandledFailure).exception ?? '';
           emit(
-            AuthFailed(errorMessage: 'Terjadi kesalahan\n$message'),
+            AuthFailed(
+              error: err,
+              errorMessage: 'Terjadi kesalahan\n$message',
+            ),
           );
         }
       },
-      (token) {
+      (data) {
+        final (token, refreshToken) = data;
         _localDBRepository.store(HiveKey.accessToken, token);
+        _localDBRepository.store(HiveKey.refreshToken, refreshToken);
         emit(AuthSuccess());
       },
     );
