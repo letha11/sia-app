@@ -33,12 +33,12 @@ void main() {
     });
 
     test('should open a hive box when new instance being made', () async {
-      final _hive = MockHiveInterface();
+      final hive = MockHiveInterface();
 
-      _hive.init('apps');
-      await LocalDBRepository.create(hive: _hive);
+      hive.init('apps');
+      await LocalDBRepository.create(hive: hive);
 
-      verify(_hive.openBox('apps_box')).called(1);
+      verify(hive.openBox('apps_box')).called(1);
     });
   });
 
@@ -58,7 +58,6 @@ void main() {
       verify(box.get(any)).called(1);
       expect(result, true);
     });
-
   });
 
   group('store method', () {
@@ -85,8 +84,7 @@ void main() {
     test(
         'should throw an error when the `key` arguments are not a type of `string` or `LocalDBRepository`',
         () async {
-      expect(() => repository.remove(123),
-          throwsA(isA<ArgumentError>()));
+      expect(() => repository.remove(123), throwsA(isA<ArgumentError>()));
     });
 
     test('should not return anything on success', () async {

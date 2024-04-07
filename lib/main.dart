@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:sia_app/bloc/auth/auth_bloc.dart';
+import 'package:sia_app/bloc/home/bloc/home_bloc.dart';
 import 'package:sia_app/core/service_locator.dart';
 import 'package:sia_app/theme.dart';
 import 'package:sia_app/ui/pages/home.dart';
@@ -49,7 +50,11 @@ class _MyAppState extends State<MyApp> {
                   if (state is AuthAuthenticated) {
                     _navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (_) => const HomePage(),
+                        builder: (_) => BlocProvider<HomeBloc>(
+                          create: (context) =>
+                              sl<HomeBloc>()..add(FetchUserDetailEvent()),
+                          child: const HomePage(),
+                        ),
                       ),
                       (_) => false,
                     );
@@ -71,8 +76,8 @@ class _MyAppState extends State<MyApp> {
         ),
         onGenerateRoute: (_) => MaterialPageRoute(
           builder: (_) => Container(
-              color: Colors
-                  .white), // TODO: should be changed to splash screen / splash page
+            color: Colors.white,
+          ), // TODO: should be changed to splash screen / splash page
         ),
       ),
     );

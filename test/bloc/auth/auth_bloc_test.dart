@@ -5,7 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sia_app/bloc/auth/auth_bloc.dart';
 import 'package:sia_app/core/failures.dart';
-import 'package:sia_app/data/repository/auth/auth_repository.dart';
+import 'package:sia_app/data/repository/auth_repository.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';
 
 @GenerateNiceMocks([MockSpec<LocalDBRepository>(), MockSpec<AuthRepository>()])

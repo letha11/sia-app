@@ -1,10 +1,8 @@
-import 'dart:ffi';
-
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sia_app/core/failures.dart';
-import 'package:sia_app/data/repository/auth/auth_repository.dart';
+import 'package:sia_app/data/repository/auth_repository.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';
 import 'package:sia_app/utils/constants.dart';
 

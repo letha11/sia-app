@@ -48,3 +48,13 @@ class Unauthorized extends Failure {
     return "Unauthorized";
   }
 }
+
+class TimeoutFailure extends Failure {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() {
+    return "Timeout";
+  }
+}

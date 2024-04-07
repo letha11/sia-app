@@ -3,10 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:sia_app/core/dio_client.dart';
 import 'package:sia_app/core/failures.dart';
-import 'package:sia_app/data/repository/auth/auth_repository.dart';
+import 'package:sia_app/data/repository/auth_repository.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';
 
 @GenerateNiceMocks([MockSpec<DioClient>(), MockSpec<LocalDBRepository>()])
