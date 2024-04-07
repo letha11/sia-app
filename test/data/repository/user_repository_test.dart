@@ -38,9 +38,7 @@ void main() {
   group('getDetail', () {
     const route = "/detail";
 
-    test(
-        'should return Left(Unauthorized) when request return with 401 status code',
-        () async {
+    test('should return Left(Unauthorized) when request return with 401 status code', () async {
       dioAdapter.onGet(route, (server) => server.reply(401, ""));
 
       final result = await userRepository.getDetail();
@@ -49,9 +47,7 @@ void main() {
       expect(result, equals(Left(Unauthorized())));
     });
 
-    test(
-        'should return Left(TimeoutFailure) when request return with 503 status code',
-        () async {
+    test('should return Left(TimeoutFailure) when request return with 503 status code', () async {
       dioAdapter.onGet(route, (server) => server.reply(503, "timeout"));
 
       final result = await userRepository.getDetail();
@@ -60,8 +56,7 @@ void main() {
       expect(result, equals(Left(TimeoutFailure())));
     });
 
-    test('should return Right(UserDetail) when request are successful',
-        () async {
+    test('should return Right(UserDetail) when request are successful', () async {
       final resultExpected = UserDetail(
         fakultas: "Ilmu Komputer",
         ipk: "3.86",
@@ -71,6 +66,7 @@ void main() {
         kelas: "Reguler",
         kurikulum: "1521 - Kurikulum 2021 Reguler",
         nama: "IBKA ANHAR FATCHA(Lapor BAP, ijazah)",
+        nim: "41522010137",
         pendidikanAsal: "SMU",
         periodeMasuk: "Semester Gasal 2022",
         semester: "4",

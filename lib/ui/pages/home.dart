@@ -199,9 +199,9 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    '415222010137',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Text(
+                    _userDetail?.nim ?? "",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
                     'IPK ${_userDetail?.ipk} | SKS ${_userDetail?.sksTempuh}',

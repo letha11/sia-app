@@ -10,6 +10,7 @@ void main() {
   String kelas = "Reguler";
   String kurikulum = "1521 - Kurikulum 2021 Reguler";
   String nama = "IBKA ANHAR FATCHA(Lapor BAP, ijazah)";
+  String nim = "41522010137";
   String pendidikanAsal = "SMU";
   String periodeMasuk = "Semester Gasal 2022";
   String semester = "4";
@@ -52,6 +53,7 @@ void main() {
             kelas: kelas,
             kurikulum: kurikulum,
             nama: nama,
+          nim: nim,
             pendidikanAsal: pendidikanAsal,
             periodeMasuk: periodeMasuk,
             semester: semester,
@@ -91,6 +93,7 @@ void main() {
           kelas: kelas,
           kurikulum: kurikulum,
           nama: nama,
+          nim: nim,
           pendidikanAsal: pendidikanAsal,
           periodeMasuk: periodeMasuk,
           semester: semester,

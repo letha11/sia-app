@@ -10,6 +10,7 @@ class UserDetail extends Equatable {
     required this.kelas,
     required this.kurikulum,
     required this.nama,
+    required this.nim,
     required this.pendidikanAsal,
     required this.periodeMasuk,
     required this.semester,
@@ -26,6 +27,7 @@ class UserDetail extends Equatable {
   late final String kelas;
   late final String kurikulum;
   late final String nama;
+  late final String nim;
   late final String pendidikanAsal;
   late final String periodeMasuk;
   late final String semester;
@@ -44,6 +46,7 @@ class UserDetail extends Equatable {
     kelas = data['kelas'];
     kurikulum = data['kurikulum'];
     nama = data['nama'];
+    nim = data['nim'];
     pendidikanAsal = data['pendidikan_asal'];
     periodeMasuk = data['periode_masuk'];
     semester = data['semester'];
@@ -63,6 +66,7 @@ class UserDetail extends Equatable {
     dataJson['data']['kelas'] = kelas;
     dataJson['data']['kurikulum'] = kurikulum;
     dataJson['data']['nama'] = nama;
+    dataJson['data']['nim'] = nim;
     dataJson['data']['pendidikan_asal'] = pendidikanAsal;
     dataJson['data']['periode_masuk'] = periodeMasuk;
     dataJson['data']['semester'] = semester;

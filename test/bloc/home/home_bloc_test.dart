@@ -23,6 +23,7 @@ void main() {
     kelas: "Reguler",
     kurikulum: "1521 - Kurikulum 2021 Reguler",
     nama: "IBKA ANHAR FATCHA(Lapor BAP, ijazah)",
+    nim: "41522010137",
     pendidikanAsal: "SMU",
     periodeMasuk: "Semester Gasal 2022",
     semester: "4",
