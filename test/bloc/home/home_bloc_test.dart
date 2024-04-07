@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:sia_app/bloc/home/bloc/home_bloc.dart';
+import 'package:sia_app/bloc/home/home_bloc.dart';
 import 'package:sia_app/core/failures.dart';
 import 'package:sia_app/data/models/user_detail.dart';
 import 'package:sia_app/data/repository/user_repository.dart';

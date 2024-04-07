@@ -39,6 +39,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         navigatorKey: _navigatorKey,
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         themeMode: ThemeMode.light,
         builder: (context, child) => FutureBuilder(

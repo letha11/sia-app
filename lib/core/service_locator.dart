@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:sia_app/bloc/auth/auth_bloc.dart';
-import 'package:sia_app/bloc/home/bloc/home_bloc.dart';
+import 'package:sia_app/bloc/home/home_bloc.dart';
 import 'package:sia_app/core/dio_client.dart';
 import 'package:sia_app/data/repository/auth_repository.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';

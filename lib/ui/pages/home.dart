@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sia_app/bloc/home/bloc/home_bloc.dart';
+import 'package:sia_app/bloc/home/home_bloc.dart';
 import 'package:sia_app/data/models/user_detail.dart';
 import 'package:sia_app/ui/pages/jadwal.dart';
 import 'package:sia_app/ui/pages/kehadiran.dart';
