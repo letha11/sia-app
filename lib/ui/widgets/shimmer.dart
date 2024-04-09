@@ -52,8 +52,7 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     required RenderBox descendant,
     Offset offset = Offset.zero,
   }) {
-    final shimmerBox = context.findRenderObject() as RenderBox;
-    return descendant.localToGlobal(offset, ancestor: shimmerBox);
+    return descendant.localToGlobal(offset, ancestor: descendant);
   }
 
   Listenable get shimmerChanges => _shimmerController;
@@ -146,9 +145,13 @@ class _ShimmerLoadingIndicatorState extends State<ShimmerLoadingIndicator> {
 
     final shimmerSize = shimmer.size;
     final gradient = shimmer.gradient;
-    final offsetWithinShimmer = shimmer.getDescendantOffset(
-      descendant: context.findRenderObject() as RenderBox,
-    );
+    Offset offsetWithinShimmer = Offset.zero;
+    if(context.findRenderObject() != null) {
+      final box = context.findRenderObject() as RenderBox;
+      offsetWithinShimmer = shimmer.getDescendantOffset(
+        descendant: box,
+      );
+    }
 
     return ShaderMask(
       blendMode: BlendMode.srcATop,

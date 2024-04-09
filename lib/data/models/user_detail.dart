@@ -85,6 +85,7 @@ class UserDetail extends Equatable {
         kelas,
         kurikulum,
         nama,
+        nim,
         pendidikanAsal,
         periodeMasuk,
         semester,

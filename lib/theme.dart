@@ -114,11 +114,20 @@ class AppTheme {
         ),
       ),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.transparent),
+        overlayColor: MaterialStateProperty.all(Colors.transparent),
+        foregroundColor: MaterialStateProperty.all(const Color(0xFF242424)),
+      ),
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF008DDA)),
+        backgroundColor:
+            MaterialStateProperty.all<Color>(const Color(0xFF008DDA)),
         overlayColor: MaterialStateProperty.all<Color>(const Color(0xFF005F8A)),
-        foregroundColor: MaterialStateProperty.all<Color>(const Color(0xFFFFFFFF)),
+        foregroundColor:
+            MaterialStateProperty.all<Color>(const Color(0xFFFFFFFF)),
         textStyle: MaterialStateProperty.all<TextStyle>(
           const TextStyle(
             fontSize: 18,

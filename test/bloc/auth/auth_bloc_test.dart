@@ -31,9 +31,7 @@ void main() {
   group('constructor', () {
     test('work', () {
       expect(
-        AuthBloc(
-            authRepository: authRepository,
-            localDBRepository: localDBRepository),
+        AuthBloc(authRepository: authRepository, localDBRepository: localDBRepository),
         isA<AuthBloc>(),
       );
     });
@@ -57,8 +55,7 @@ void main() {
   });
 
   group('AuthCheckStatus', () {
-    blocTest(
-        'should emit [AuthUnauthenticated] when `accessToken` doesn\' exists in localDBRepository',
+    blocTest('should emit [AuthUnauthenticated] when `refreshToken` doesn\' exists in localDBRepository',
         build: () => bloc,
         act: (b) => b.add(AuthCheckStatus()),
         setUp: () {
@@ -69,15 +66,33 @@ void main() {
             ]);
 
     blocTest(
-        'should emit [AuthAuthenticated] when `accessToken` exists in localDBRepository',
-        build: () => bloc,
-        act: (b) => b.add(AuthCheckStatus()),
-        setUp: () {
-          when(localDBRepository.get(any)).thenReturn('token is here!');
-        },
-        expect: () => [
-              AuthAuthenticated(),
-            ]);
+      'should emit [AuthUnauthenticated] when `refreshToken` exists in localDBRepository but the `refreshToken` are expired',
+      build: () => bloc,
+      act: (b) => b.add(AuthCheckStatus()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn('token is here!');
+        when(authRepository.refreshToken()).thenAnswer((_) async => Left(Unauthorized()));
+      },
+      expect: () => [
+        AuthUnauthenticated(),
+      ],
+    );
+
+    blocTest(
+      'should emit [AuthAuthenticated] when `refreshToken` exists in localDBRepository and the `refreshToken` are not expired',
+      build: () => bloc,
+      act: (b) => b.add(AuthCheckStatus()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn('token is here!');
+        when(authRepository.refreshToken()).thenAnswer((_) async => const Right(('yup','refreshYup')));
+      },
+      verify: (_) {
+        verify(localDBRepository.store(any, any)).called(2);
+      },
+      expect: () => [
+        AuthAuthenticated(),
+      ],
+    );
   });
 
   group('Login', () {

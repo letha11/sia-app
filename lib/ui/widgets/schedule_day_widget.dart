@@ -6,10 +6,12 @@ class ScheduleDayWidget extends StatelessWidget {
     super.key,
     required this.day,
     required this.children,
+    this.enabled = true,
   });
 
   final String day;
   final List<SubjectTileItem> children;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class ScheduleDayWidget extends StatelessWidget {
       child: Material(
         color: Theme.of(context).colorScheme.primary,
         child: ExpansionTile(
+          enabled: enabled,
           title: Text(
             day,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(

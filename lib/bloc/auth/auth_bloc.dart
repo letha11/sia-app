@@ -32,10 +32,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   _onAuthCheckStatus(AuthCheckStatus event, Emitter<AuthState> emit) async {
-    final String? token = await _localDBRepository.get(HiveKey.refreshToken);
+    final String? refreshToken =
+        await _localDBRepository.get(HiveKey.refreshToken);
 
-    if (token != null && token.isNotEmpty) {
-      emit(AuthAuthenticated());
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      final result = await _authRepository.refreshToken();
+
+      result.fold(
+        (err) {
+          emit(AuthUnauthenticated());
+        },
+        (data) {
+          final (newToken, newRefreshToken) = data;
+          _localDBRepository.store(HiveKey.accessToken, newToken);
+          _localDBRepository.store(HiveKey.refreshToken, newRefreshToken);
+          emit(AuthAuthenticated());
+        },
+      );
     } else {
       emit(AuthUnauthenticated());
     }

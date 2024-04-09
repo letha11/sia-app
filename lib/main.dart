@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:sia_app/bloc/auth/auth_bloc.dart';
-import 'package:sia_app/bloc/home/bloc/home_bloc.dart';
+import 'package:sia_app/bloc/home/home_bloc.dart';
 import 'package:sia_app/core/service_locator.dart';
 import 'package:sia_app/theme.dart';
 import 'package:sia_app/ui/pages/home.dart';
@@ -35,6 +35,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => sl<AuthBloc>()..add(AuthCheckStatus()),
         ),
+        BlocProvider(
+          create: (context) => sl<HomeBloc>(),
+        ),
       ],
       child: MaterialApp(
         navigatorKey: _navigatorKey,
@@ -51,9 +54,8 @@ class _MyAppState extends State<MyApp> {
                   if (state is AuthAuthenticated) {
                     _navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (_) => BlocProvider<HomeBloc>(
-                          create: (context) =>
-                              sl<HomeBloc>()..add(FetchUserDetailEvent()),
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<HomeBloc>(),
                           child: const HomePage(),
                         ),
                       ),
