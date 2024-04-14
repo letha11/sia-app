@@ -37,7 +37,9 @@ class _JadwalPageState extends State<JadwalPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: state is ScheduleSuccess ? () => _pickPeriode(context, state) : null,
+                  onPressed: state is ScheduleSuccess
+                      ? () => _pickPeriode(context, state)
+                      : null,
                   style: Theme.of(context).textButtonTheme.style,
                   child: Text(
                     _pickedPeriode ?? _period?[0].label ?? "",
@@ -50,7 +52,9 @@ class _JadwalPageState extends State<JadwalPage> {
               child: SizedBox(
                 width: double.infinity,
                 child: Column(
-                  crossAxisAlignment: state is ScheduleFailed ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                  crossAxisAlignment: state is ScheduleFailed
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.start,
                   children: _buildChildren(state),
                 ),
               ),
@@ -63,26 +67,44 @@ class _JadwalPageState extends State<JadwalPage> {
 
   _pickPeriode(BuildContext context, ScheduleState state) {
     final List<Widget> widgets = state is ScheduleSuccess
-        ? state.schedule.periode
-            .map(
-              (p) => Material(
+        ? state.schedule.periode.map(
+            (p) {
+              bool isSelected = p.label ==
+                  (_pickedPeriode ?? state.schedule.periode[0].label);
+              return Material(
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
                     _pickedPeriode = p.label;
                     Navigator.of(context).pop();
-                    context.read<ScheduleBloc>().add(FetchSchedule(periode: p.value));
+                    context
+                        .read<ScheduleBloc>()
+                        .add(FetchSchedule(periode: p.value));
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 15),
                     child: Center(
-                      child: Text(p.label),
+                      child: Text(
+                        p.label,
+                        style: isSelected
+                            ? TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onPrimary)
+                            : null,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )
-            .toList()
+              );
+            },
+          ).toList()
         : [Container()];
 
     showModalBottomSheet(
@@ -90,10 +112,9 @@ class _JadwalPageState extends State<JadwalPage> {
       backgroundColor: Colors.transparent,
       builder: (context) => BottomSheet(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        // backgroundColor: Colors.transparent,
         onClosing: () {},
         builder: (context) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -116,7 +137,8 @@ class _JadwalPageState extends State<JadwalPage> {
   }
 
   List<Widget> _buildChildren(ScheduleState state) {
-    if (state is ScheduleLoading && savedSchedule == null || state is ScheduleInitial) {
+    if (state is ScheduleLoading && savedSchedule == null ||
+        state is ScheduleInitial) {
       return [
         const ShimmerLoadingIndicator(
           isLoading: true,
@@ -193,12 +215,12 @@ class _JadwalPageState extends State<JadwalPage> {
       state = (state as ScheduleFailed);
       return [
         if (state.error != null) ...[
-        Text(
-          state.error.toString(),
-          style: Theme.of(context).textTheme.headlineSmall,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 5),
+          Text(
+            state.error.toString(),
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 5),
         ],
         Text(
           state.errorMessage,
@@ -216,7 +238,10 @@ class _JadwalPageState extends State<JadwalPage> {
           },
           child: Text(
             'Refresh',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
           ),
         ),
       ];
