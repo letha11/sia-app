@@ -1,8 +1,10 @@
 import 'package:get_it/get_it.dart';
+import 'package:sia_app/bloc/attendance/attendance_bloc.dart';
 import 'package:sia_app/bloc/auth/auth_bloc.dart';
 import 'package:sia_app/bloc/home/home_bloc.dart';
 import 'package:sia_app/bloc/schedule/schedule_bloc.dart';
 import 'package:sia_app/core/dio_client.dart';
+import 'package:sia_app/data/repository/attendance_repository.dart';
 import 'package:sia_app/data/repository/auth_repository.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';
 import 'package:sia_app/data/repository/schedule_repository.dart';
@@ -26,6 +28,9 @@ void initialize() {
   sl.registerLazySingleton<ScheduleRepository>(
     () => ScheduleRepository(dioClient: sl()),
   );
+  sl.registerLazySingleton<AttendanceRepository>(
+    () => AttendanceRepository(dioClient: sl()),
+  );
 
   sl.registerFactory(
     () => AuthBloc(
@@ -43,6 +48,12 @@ void initialize() {
   sl.registerFactory(
     () => ScheduleBloc(
       scheduleRepository: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => AttendanceBloc(
+      attendanceRepository: sl(),
     ),
   );
 }

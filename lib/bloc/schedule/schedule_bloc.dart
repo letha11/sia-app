@@ -28,7 +28,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
           emit(
             ScheduleFailed(
               error: err,
-              errorMessage: "Silahkan login ulang untuk mengakses halaman ini",
+              errorMessage: err.defaultMessage,
             ),
           );
         } else if (err is TimeoutFailure) {

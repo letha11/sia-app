@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:sia_app/utils/constants.dart';
 
 class AttendanceStatusWidget extends StatelessWidget {
   const AttendanceStatusWidget({
     super.key,
     this.text,
-    this.presence,
+    required this.presence,
   });
 
   final String? text;
-
-  /// if `presence` is `true` the attendance will have a color of green
-  /// if `false` it will have a color of red
-  /// if `null` it will have no color (white)
-  final bool? presence;
+  final AttendanceStatus presence;
 
   Color getPresenceColor() {
-    if (presence == null) {
+    if (presence == AttendanceStatus.noClassYet) {
       return Colors.white;
-    } else if (presence!) {
+    } else if (presence == AttendanceStatus.present) {
       return const Color(0xFF00E0AF);
     } else {
       return const Color(0xFFE82222);
@@ -27,7 +24,7 @@ class AttendanceStatusWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 20,
+      width: 24,
       child: Column(
         children: [
           Container(
@@ -41,10 +38,10 @@ class AttendanceStatusWidget extends StatelessWidget {
           const SizedBox(height: 6),
           if (text != null)
             Text(
-              '24/3 Ke-1',
+              text!,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 8,
+                    fontSize: 9,
                     color: Theme.of(context).colorScheme.onPrimary,
                     height: 1.2,
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sia_app/bloc/attendance/attendance_bloc.dart';
 import 'package:sia_app/bloc/home/home_bloc.dart';
 import 'package:sia_app/bloc/schedule/schedule_bloc.dart';
 import 'package:sia_app/core/service_locator.dart';
@@ -19,10 +20,10 @@ class _HomePageState extends State<HomePage> {
   UserDetail? _userDetail;
 
   @override
-    void initState() {
-      context.read<HomeBloc>().add(FetchUserDetailEvent());
-      super.initState();
-    }
+  void initState() {
+    context.read<HomeBloc>().add(FetchUserDetailEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,8 @@ class _HomePageState extends State<HomePage> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Selamat Datang', style: Theme.of(context).textTheme.bodySmall),
+              Text('Selamat Datang',
+                  style: Theme.of(context).textTheme.bodySmall),
               BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
                 if (state is HomeSuccess) {
                   _userDetail = state.userDetail;
@@ -57,7 +59,8 @@ class _HomePageState extends State<HomePage> {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(25, 15, 25, 25),
                 sliver: SliverToBoxAdapter(
-                  child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+                  child: BlocBuilder<HomeBloc, HomeState>(
+                      builder: (context, state) {
                     if (state is HomeSuccess) {
                       _userDetail = state.userDetail;
                     }
@@ -79,7 +82,8 @@ class _HomePageState extends State<HomePage> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => BlocProvider<ScheduleBloc>(
-                                create: (context) => sl<ScheduleBloc>()..add(const FetchSchedule()),
+                                create: (context) => sl<ScheduleBloc>()
+                                  ..add(const FetchSchedule()),
                                 child: const JadwalPage(),
                               ),
                             ),
@@ -92,7 +96,11 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => const KehadiranPage(),
+                              builder: (_) => BlocProvider<AttendanceBloc>(
+                                create: (context) => sl<AttendanceBloc>()
+                                  ..add(FetchAttendance()),
+                                child: const KehadiranPage(),
+                              ),
                             ),
                           );
                         },
@@ -148,6 +156,13 @@ class _HomePageState extends State<HomePage> {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 3,
                 ),
+              ),
+              const SizedBox(height: 9),
+              Text(
+                'Pull to Refresh',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.error),
               ),
             ],
           ),
@@ -218,8 +233,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Text(
                     'IPK ${_userDetail?.ipk} | SKS ${_userDetail?.sksTempuh}',
-                    style:
-                        Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ],
               ),

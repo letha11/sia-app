@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sia_app/ui/widgets/attendance_status.dart';
+import 'package:sia_app/utils/constants.dart';
 
 class SubjectContainer extends StatelessWidget {
-  const SubjectContainer({
-    super.key,
-    required this.subject,
-  });
+  const SubjectContainer(
+      {super.key, required this.subject, required this.attendance});
 
   final String subject;
+  final List<AttendanceStatusWidget> attendance;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 25.0),
+      // margin: const EdgeInsets.symmetric(horizontal: 25.0),
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
@@ -35,7 +35,7 @@ class SubjectContainer extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: .0),
+                padding: const EdgeInsets.only(left: 10),
                 child: Text(
                   '100%',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -58,16 +58,26 @@ class SubjectContainer extends StatelessWidget {
           Wrap(
             spacing: 15,
             runSpacing: 10,
-            children: [
-              for (var i = 0; i < 16; i++)
-                AttendanceStatusWidget(
-                  text: i <= 6 ? '24/3 Ke-$i' : null,
-                  presence: true,
-                ),
-            ],
+            children: _buildAttendance(),
           ),
         ],
       ),
     );
+  }
+
+  _buildAttendance() {
+    final List<Widget> widgets = [];
+    if (attendance.isEmpty) {
+      for (var i = 0; i < 16; i++) {
+        widgets.add(AttendanceStatusWidget(
+          text: i <= 6 ? '24/3 Ke-$i' : null,
+          presence: AttendanceStatus.noClassYet,
+        ));
+      }
+    } else {
+      return attendance;
+    }
+
+    return widgets;
   }
 }

@@ -40,6 +40,8 @@ class InvalidInput extends Failure {
 }
 
 class Unauthorized extends Failure {
+  final defaultMessage = "Silahkan login ulang untuk mengakses halaman ini";
+
   @override
   List<Object?> get props => [];
 
