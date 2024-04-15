@@ -51,6 +51,15 @@ class Unauthorized extends Failure {
   }
 }
 
+class NoDataFailure extends Failure {
+  final defaultMessage = "Kamu sedang offline, periksa koneksi kamu lalu coba lagi";
+  
+  @override
+  String toString() {
+    return "No Data";
+  }
+}
+
 class TimeoutFailure extends Failure {
   @override
   List<Object?> get props => [];

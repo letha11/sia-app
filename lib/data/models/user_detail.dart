@@ -35,8 +35,8 @@ class UserDetail extends Equatable {
   late final String status;
   late final bool success;
 
-  UserDetail.fromJson(Map<String, dynamic> json) {
-    Map<String, dynamic> data = json['data'];
+  UserDetail.fromJson(Map<dynamic, dynamic> json) {
+    Map<dynamic, dynamic> data = json['data'];
     success = json['success'];
     fakultas = data['fakultas'];
     ipk = data['ipk'];

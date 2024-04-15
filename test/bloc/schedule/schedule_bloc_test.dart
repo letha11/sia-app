@@ -4,11 +4,17 @@ import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sia_app/bloc/schedule/schedule_bloc.dart';
+import 'package:sia_app/core/connection.dart';
 import 'package:sia_app/core/failures.dart';
 import 'package:sia_app/data/models/schedule.dart';
+import 'package:sia_app/data/repository/local/local_db_repository.dart';
 import 'package:sia_app/data/repository/schedule_repository.dart';
 
-@GenerateNiceMocks([MockSpec<ScheduleRepository>()])
+@GenerateNiceMocks([
+  MockSpec<ScheduleRepository>(),
+  MockSpec<LocalDBRepository>(),
+  MockSpec<Connection>(),
+])
 import 'schedule_bloc_test.mocks.dart';
 
 void main() {
@@ -35,17 +41,117 @@ void main() {
 
   late ScheduleBloc bloc;
   late MockScheduleRepository scheduleRepository;
+  late MockLocalDBRepository localDBRepository;
+  late MockConnection connection;
 
   setUp(() {
     scheduleRepository = MockScheduleRepository();
-    bloc = ScheduleBloc(scheduleRepository: scheduleRepository);
+    localDBRepository = MockLocalDBRepository();
+    connection = MockConnection();
+    bloc = ScheduleBloc(
+      scheduleRepository: scheduleRepository,
+      localDBRepository: localDBRepository,
+      connection: connection,
+    );
+
+    when(connection.checkConnection()).thenAnswer((_) async => true);
   });
 
   group('constructor', () {
     test('work', () {
-      expect(ScheduleBloc(scheduleRepository: scheduleRepository),
-          isA<ScheduleBloc>());
+      expect(bloc, isA<ScheduleBloc>());
     });
+  });
+
+  group('FetchSchedule no connection', () {
+    setUp(() {
+      when(connection.checkConnection()).thenAnswer((_) async => false);
+    });
+
+    blocTest(
+      'should emit [ScheduleLoading, ScheduleFailed] when `_localDBRepository.get` returns an null',
+      build: () => bloc,
+      act: (b) => b.add(const FetchSchedule()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn(null);
+      },
+      expect: () => [
+        ScheduleLoading(),
+        const ScheduleFailed(errorMessage: 'x_x'),
+      ],
+    );
+
+    blocTest(
+      'should emit [ScheduleLoading, ScheduleFailed] when `Schedule` failed to parse hte stored data in local',
+      build: () => bloc,
+      act: (b) => b.add(const FetchSchedule()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn('{data: {lolo: false}}');
+      },
+      expect: () => [
+        ScheduleLoading(),
+        const ScheduleFailed(errorMessage: 'x_x'),
+      ],
+    );
+
+    blocTest(
+      'should emit [ScheduleLoading, ScheduleSuccess] when `localDBRepository.get` return the stored data and `Schedule` successfull parsing',
+      build: () => bloc,
+      act: (b) => b.add(const FetchSchedule()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn(successSchedule.toJson());
+      },
+      expect: () => [
+        ScheduleLoading(),
+        const ScheduleSuccess(schedule: successSchedule),
+      ],
+    );
+  });
+
+  group('FetchSchedule TimeoutFailure', () {
+    setUp(() {
+      when(scheduleRepository.getSchedule())
+          .thenAnswer((_) async => Left(TimeoutFailure()));
+    });
+    
+    blocTest(
+      'should emit [ScheduleLoading, ScheduleFailed] when `localDBRepository.get` return nul',
+      build: () => bloc,
+      act: (b) => b.add(const FetchSchedule()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn(null);
+      },
+      expect: () => [
+        ScheduleLoading(),
+        const ScheduleFailed(errorMessage: 'x_x'),
+      ],
+    );
+    
+    blocTest(
+      'should emit [ScheduleLoading, ScheduleFailed] when `Schedule` failed to parse the stored data',
+      build: () => bloc,
+      act: (b) => b.add(const FetchSchedule()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn("{data:}");
+      },
+      expect: () => [
+        ScheduleLoading(),
+        const ScheduleFailed(errorMessage: 'x_x'),
+      ],
+    );
+    
+    blocTest(
+      'should emit [ScheduleLoading, ScheduleSuccess] when `localDBRepository.get` return a stored data and `Schedule` doesn\'t fail to parse the data ',
+      build: () => bloc,
+      act: (b) => b.add(const FetchSchedule()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn(successSchedule.toJson());
+      },
+      expect: () => [
+        ScheduleLoading(),
+        const ScheduleSuccess(schedule: successSchedule),
+      ],
+    );
   });
 
   group('FetchSchedule', () {

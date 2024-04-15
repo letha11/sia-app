@@ -4,11 +4,16 @@ import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sia_app/bloc/auth/auth_bloc.dart';
+import 'package:sia_app/core/connection.dart';
 import 'package:sia_app/core/failures.dart';
 import 'package:sia_app/data/repository/auth_repository.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';
 
-@GenerateNiceMocks([MockSpec<LocalDBRepository>(), MockSpec<AuthRepository>()])
+@GenerateNiceMocks([
+  MockSpec<LocalDBRepository>(),
+  MockSpec<AuthRepository>(),
+  MockSpec<Connection>(),
+])
 import 'auth_bloc_test.mocks.dart';
 
 void main() {
@@ -16,22 +21,25 @@ void main() {
 
   late MockAuthRepository authRepository;
   late MockLocalDBRepository localDBRepository;
+  late MockConnection connection;
   late AuthBloc bloc;
 
   setUp(() {
     authRepository = MockAuthRepository();
     localDBRepository = MockLocalDBRepository();
+    connection = MockConnection();
 
     bloc = AuthBloc(
       authRepository: authRepository,
       localDBRepository: localDBRepository,
+      connection: connection,
     );
   });
 
   group('constructor', () {
     test('work', () {
       expect(
-        AuthBloc(authRepository: authRepository, localDBRepository: localDBRepository),
+        bloc,
         isA<AuthBloc>(),
       );
     });
@@ -55,7 +63,12 @@ void main() {
   });
 
   group('AuthCheckStatus', () {
-    blocTest('should emit [AuthUnauthenticated] when `refreshToken` doesn\' exists in localDBRepository',
+    setUp(() {
+      when(connection.checkConnection()).thenAnswer((_) async => true);
+    });
+
+    blocTest(
+        'should emit [AuthUnauthenticated] when `refreshToken` doesn\'t exists in localDBRepository',
         build: () => bloc,
         act: (b) => b.add(AuthCheckStatus()),
         setUp: () {
@@ -71,10 +84,24 @@ void main() {
       act: (b) => b.add(AuthCheckStatus()),
       setUp: () {
         when(localDBRepository.get(any)).thenReturn('token is here!');
-        when(authRepository.refreshToken()).thenAnswer((_) async => Left(Unauthorized()));
+        when(authRepository.refreshToken())
+            .thenAnswer((_) async => Left(Unauthorized()));
       },
       expect: () => [
         AuthUnauthenticated(),
+      ],
+    );
+
+    blocTest(
+      'should emit [AuthAuthenticated] when `refreshToken` exists and if there is no connection in the device',
+      build: () => bloc,
+      act: (b) => b.add(AuthCheckStatus()),
+      setUp: () {
+        when(localDBRepository.get(any)).thenReturn('token is here!');
+        when(connection.checkConnection()).thenAnswer((_) async => false);
+      },
+      expect: () => [
+        AuthAuthenticated(),
       ],
     );
 
@@ -84,7 +111,8 @@ void main() {
       act: (b) => b.add(AuthCheckStatus()),
       setUp: () {
         when(localDBRepository.get(any)).thenReturn('token is here!');
-        when(authRepository.refreshToken()).thenAnswer((_) async => const Right(('yup','refreshYup')));
+        when(authRepository.refreshToken())
+            .thenAnswer((_) async => const Right(('yup', 'refreshYup')));
       },
       verify: (_) {
         verify(localDBRepository.store(any, any)).called(2);

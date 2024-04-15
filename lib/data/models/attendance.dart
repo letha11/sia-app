@@ -7,7 +7,7 @@ class Attendance extends Equatable {
 
   Attendance({this.data, this.success});
 
-  Attendance.fromJson(Map<String, dynamic> json) {
+  Attendance.fromJson(Map<dynamic, dynamic> json) {
     if (json['data'] != null) {
       data = <Perkuliahan>[];
       json['data'].forEach((v) {
@@ -39,7 +39,7 @@ class Perkuliahan extends Equatable {
 
   Perkuliahan({this.namaMatkul, this.perkuliahan});
 
-  Perkuliahan.fromJson(Map<String, dynamic> json) {
+  Perkuliahan.fromJson(Map<dynamic, dynamic> json) {
     namaMatkul = json['nama_matkul'];
     if (json['perkuliahan'] != null) {
       perkuliahan = <Kuliah>[];
@@ -79,7 +79,7 @@ class Kuliah extends Equatable {
       this.pertemuan,
       this.tanggal});
 
-  Kuliah.fromJson(Map<String, dynamic> json) {
+  Kuliah.fromJson(Map<dynamic, dynamic> json) {
     kehadiran = (json['kehadiran'] as String).toAttendanceStatus();
     linkModul = json['link_modul'];
     materi = json['materi'];

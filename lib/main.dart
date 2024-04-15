@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -25,8 +29,41 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  late final StreamSubscription<List<ConnectivityResult>> subscription;
 
   NavigatorState get _navigator => _navigatorKey.currentState!;
+
+  @override
+  void initState() {
+    subscription = Connectivity()
+        // .onConnectivityChanged.skip(1)
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> result) {
+      if (result.contains(ConnectivityResult.none)) {
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Anda sedang offline, periksa koneksi anda untuk merasakan pengalaman yang lebih baik.',
+              textAlign: TextAlign.center,
+            ),
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+          ),
+        );
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    subscription.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,39 +80,42 @@ class _MyAppState extends State<MyApp> {
         navigatorKey: _navigatorKey,
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: scaffoldMessengerKey,
         theme: AppTheme.lightTheme,
         themeMode: ThemeMode.light,
-        builder: (context, child) => FutureBuilder(
-          future: sl.allReady(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return BlocListener<AuthBloc, AuthState>(
-                listener: (_, state) {
-                  if (state is AuthAuthenticated) {
-                    _navigator.pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                          value: context.read<HomeBloc>(),
-                          child: const HomePage(),
+        builder: (context, child) => Scaffold(
+          body: FutureBuilder(
+            future: sl.allReady(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return BlocListener<AuthBloc, AuthState>(
+                  listener: (_, state) {
+                    if (state is AuthAuthenticated) {
+                      _navigator.pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: context.read<HomeBloc>(),
+                            child: const HomePage(),
+                          ),
                         ),
-                      ),
-                      (_) => false,
-                    );
-                  } else if (state is AuthUnauthenticated) {
-                    _navigator.pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (_) => const LoginPage(),
-                      ),
-                      (_) => false,
-                    );
-                  }
-                },
-                child: child!,
-              );
-            }
+                        (_) => false,
+                      );
+                    } else if (state is AuthUnauthenticated) {
+                      _navigator.pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (_) => const LoginPage(),
+                        ),
+                        (_) => false,
+                      );
+                    }
+                  },
+                  child: child!,
+                );
+              }
 
-            return child!;
-          },
+              return child!;
+            },
+          ),
         ),
         onGenerateRoute: (_) => MaterialPageRoute(
           builder: (_) => Container(

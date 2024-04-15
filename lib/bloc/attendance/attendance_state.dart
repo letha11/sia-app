@@ -22,7 +22,7 @@ final class AttendanceSuccess extends AttendanceState {
 
 final class AttendanceFailed extends AttendanceState {
   final String errorMessage;
-  final Failure? error;
+  final Object? error;
 
   const AttendanceFailed({required this.errorMessage, this.error});
 }

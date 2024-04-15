@@ -8,7 +8,7 @@ class Schedule extends Equatable {
   const Schedule(
       {required this.success, required this.mataKuliah, required this.periode});
 
-  factory Schedule.fromJson(Map<String, dynamic> json) {
+  factory Schedule.fromJson(Map<dynamic, dynamic> json) {
     final data = json['data'];
     return Schedule(
       success: json['success'],
@@ -33,9 +33,11 @@ class Schedule extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'success': success,
-      'mata_kuliah': mataKuliah
-          .map((k, v) => MapEntry(k, v.map((x) => x.toJson()).toList())),
-      'periode': periode.map((x) => x.toJson()).toList(),
+      'data': {
+        'mata_kuliah': mataKuliah
+            .map((k, v) => MapEntry(k, v.map((x) => x.toJson()).toList())),
+        'periode': periode.map((x) => x.toJson()).toList(),
+      },
     };
   }
 
@@ -57,7 +59,7 @@ class ScheduleSubject extends Equatable {
       required this.ruangan,
       required this.time});
 
-  factory ScheduleSubject.fromJson(Map<String, dynamic> json) {
+  factory ScheduleSubject.fromJson(Map<dynamic, dynamic> json) {
     return ScheduleSubject(
       dosen: json['dosen'],
       hari: json['hari'],
@@ -87,7 +89,7 @@ class Period extends Equatable {
 
   const Period({required this.label, required this.value});
 
-  factory Period.fromJson(Map<String, dynamic> json) {
+  factory Period.fromJson(Map<dynamic, dynamic> json) {
     return Period(
       label: json['label'],
       value: json['value'],

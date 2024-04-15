@@ -8,8 +8,10 @@ import 'dart:async' as _i3;
 import 'package:fpdart/fpdart.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
+import 'package:sia_app/core/connection.dart' as _i9;
 import 'package:sia_app/core/failures.dart' as _i5;
 import 'package:sia_app/data/models/schedule.dart' as _i6;
+import 'package:sia_app/data/repository/local/local_db_repository.dart' as _i8;
 import 'package:sia_app/data/repository/schedule_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -59,4 +61,34 @@ class MockScheduleRepository extends _i1.Mock
           ),
         )),
       ) as _i3.Future<_i4.Either<_i5.Failure, _i6.Schedule>>);
+}
+
+/// A class which mocks [LocalDBRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLocalDBRepository extends _i1.Mock implements _i8.LocalDBRepository {
+  @override
+  _i3.Future<void> initializeBox() => (super.noSuchMethod(
+        Invocation.method(
+          #initializeBox,
+          [],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+}
+
+/// A class which mocks [Connection].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockConnection extends _i1.Mock implements _i9.Connection {
+  @override
+  _i3.Future<bool> checkConnection() => (super.noSuchMethod(
+        Invocation.method(
+          #checkConnection,
+          [],
+        ),
+        returnValue: _i3.Future<bool>.value(false),
+        returnValueForMissingStub: _i3.Future<bool>.value(false),
+      ) as _i3.Future<bool>);
 }

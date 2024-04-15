@@ -1,15 +1,23 @@
+import 'dart:convert';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sia_app/bloc/attendance/attendance_bloc.dart';
+import 'package:sia_app/core/connection.dart';
 import 'package:sia_app/core/failures.dart';
 import 'package:sia_app/data/models/attendance.dart';
 import 'package:sia_app/data/repository/attendance_repository.dart';
+import 'package:sia_app/data/repository/local/local_db_repository.dart';
 import 'package:sia_app/utils/constants.dart';
 
-@GenerateNiceMocks([MockSpec<AttendanceRepository>()])
+@GenerateNiceMocks([
+  MockSpec<AttendanceRepository>(),
+  MockSpec<Connection>(),
+  MockSpec<LocalDBRepository>(),
+])
 import 'attendance_bloc_test.mocks.dart';
 
 void main() {
@@ -68,11 +76,21 @@ void main() {
   );
 
   late MockAttendanceRepository attendanceRepository;
+  late MockLocalDBRepository localDBRepository;
+  late MockConnection connection;
   late AttendanceBloc attendanceBloc;
 
   setUp(() {
     attendanceRepository = MockAttendanceRepository();
-    attendanceBloc = AttendanceBloc(attendanceRepository: attendanceRepository);
+    localDBRepository = MockLocalDBRepository();
+    connection = MockConnection();
+    attendanceBloc = AttendanceBloc(
+      attendanceRepository: attendanceRepository,
+      connection: connection,
+      localDBRepository: localDBRepository,
+    );
+
+    when(connection.checkConnection()).thenAnswer((_) async => true);
   });
 
   test('constructor works', () {
@@ -117,6 +135,116 @@ void main() {
         ],
       );
 
+      // timeout
+      blocTest(
+        "should emit [AttendanceLoading, AttendanceFailed] when the result of `attendanceRepository` are Left(TimeoutFailure) and `localDBRepository.get` are null",
+        setUp: () async {
+          when(attendanceRepository.getAttendance())
+              .thenAnswer((_) async => Left(TimeoutFailure()));
+          when(localDBRepository.get(any)).thenReturn(null);
+          when(connection.checkConnection()).thenAnswer((_) async => true);
+        },
+        act: (b) => b.add(FetchAttendance()),
+        build: () => attendanceBloc,
+        verify: (b) {
+          verify(localDBRepository.get(any)).called(1);
+        },
+        expect: () => <AttendanceState>[
+          AttendanceLoading(),
+          const AttendanceFailed(errorMessage: "x_x"),
+        ],
+      );
+      
+      blocTest(
+        "should emit [AttendanceLoading, AttendanceFailed] when the result of `attendanceRepository` are Left(TimeoutFailure) and `localDBRepository.get` are stored data but `Attendance` failed to parse it",
+        setUp: () async {
+          when(attendanceRepository.getAttendance())
+              .thenAnswer((_) async => Left(TimeoutFailure()));
+          when(localDBRepository.get(any)).thenReturn("{data: }");
+          when(connection.checkConnection()).thenAnswer((_) async => true);
+        },
+        act: (b) => b.add(FetchAttendance()),
+        build: () => attendanceBloc,
+        verify: (b) {
+          verify(localDBRepository.get(any)).called(1);
+        },
+        expect: () => <AttendanceState>[
+          AttendanceLoading(),
+          const AttendanceFailed(errorMessage: "x_x"),
+        ],
+      );
+
+      blocTest(
+        "should emit [AttendanceLoading, AttendanceSuccess] when the result of `attendanceRepository` are Left(TimeoutFailure) but `localDBRepository` return stored data and `Attendance` can parse it",
+        setUp: () async {
+          when(attendanceRepository.getAttendance())
+              .thenAnswer((_) async => Left(TimeoutFailure()));
+          when(localDBRepository.get(any)).thenReturn(attendance.toJson());
+          when(connection.checkConnection()).thenAnswer((_) async => true);
+        },
+        act: (b) => b.add(FetchAttendance()),
+        build: () => attendanceBloc,
+        verify: (b) {
+          verify(localDBRepository.get(any)).called(1);
+        },
+        expect: () => <AttendanceState>[
+          AttendanceLoading(),
+          AttendanceSuccess(attendance),
+        ],
+      );
+
+      // no connection
+      blocTest(
+        "should emit [AttendanceLoading, AttendanceFailed] when the result of `localDBRepository.get` are null",
+        setUp: () {
+          when(localDBRepository.get(any)).thenReturn(null);
+          when(connection.checkConnection()).thenAnswer((_) async => false);
+        },
+        act: (b) => b.add(FetchAttendance()),
+        build: () => attendanceBloc,
+        verify: (b) {
+          verify(localDBRepository.get(any)).called(1);
+        },
+        expect: () => <AttendanceState>[
+          AttendanceLoading(),
+          const AttendanceFailed(errorMessage: "x_x"),
+        ],
+      );
+
+      blocTest(
+        "should emit [AttendanceLoading, AttendanceFailed] when the result of `localDBRepository.get` are not null but failed on parsing the stored data",
+        setUp: () {
+          when(localDBRepository.get(any)).thenReturn("{data: [{no: 1}]}");
+          when(connection.checkConnection()).thenAnswer((_) async => false);
+        },
+        act: (b) => b.add(FetchAttendance()),
+        build: () => attendanceBloc,
+        verify: (b) {
+          verify(localDBRepository.get(any)).called(1);
+        },
+        expect: () => <AttendanceState>[
+          AttendanceLoading(),
+          const AttendanceFailed(errorMessage: "x_x"),
+        ],
+      );
+
+      blocTest(
+        "should emit [AttendanceLoading, AttendanceSuccess] when the result of `localDBRepository.get` are not null and success parsing",
+        setUp: () {
+          when(localDBRepository.get(any)).thenReturn(attendance.toJson());
+          when(connection.checkConnection()).thenAnswer((_) async => false);
+        },
+        act: (b) => b.add(FetchAttendance()),
+        build: () => attendanceBloc,
+        verify: (b) {
+          verify(localDBRepository.get(any)).called(1);
+        },
+        expect: () => <AttendanceState>[
+          AttendanceLoading(),
+          AttendanceSuccess(attendance),
+        ],
+      );
+
       blocTest(
         "should emit [AttendanceLoading, AttendanceSuccess] when request on `attendanceRepository` return an Right(Attendance)",
         setUp: () {
@@ -127,6 +255,7 @@ void main() {
         build: () => attendanceBloc,
         verify: (b) {
           verify(attendanceRepository.getAttendance()).called(1);
+          verify(localDBRepository.store(any, any)).called(1);
         },
         expect: () => <AttendanceState>[
           AttendanceLoading(),

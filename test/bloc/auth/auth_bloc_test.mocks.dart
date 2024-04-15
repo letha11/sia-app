@@ -8,6 +8,7 @@ import 'dart:async' as _i3;
 import 'package:fpdart/fpdart.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
+import 'package:sia_app/core/connection.dart' as _i8;
 import 'package:sia_app/core/failures.dart' as _i6;
 import 'package:sia_app/data/repository/auth_repository.dart' as _i4;
 import 'package:sia_app/data/repository/local/local_db_repository.dart' as _i2;
@@ -112,4 +113,19 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
           ),
         )),
       ) as _i3.Future<_i5.Either<_i6.Failure, (String, String)>>);
+}
+
+/// A class which mocks [Connection].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockConnection extends _i1.Mock implements _i8.Connection {
+  @override
+  _i3.Future<bool> checkConnection() => (super.noSuchMethod(
+        Invocation.method(
+          #checkConnection,
+          [],
+        ),
+        returnValue: _i3.Future<bool>.value(false),
+        returnValueForMissingStub: _i3.Future<bool>.value(false),
+      ) as _i3.Future<bool>);
 }
