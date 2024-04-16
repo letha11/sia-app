@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:sia_app/bloc/auth/auth_bloc.dart';
 import 'package:sia_app/bloc/home/home_bloc.dart';
@@ -14,7 +15,10 @@ import 'package:sia_app/ui/pages/login.dart';
 
 void main() async {
   await Hive.initFlutter();
-
+  
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  
   initialize(); // getit
 
   runApp(const MyApp());
@@ -91,6 +95,7 @@ class _MyAppState extends State<MyApp> {
                 return BlocListener<AuthBloc, AuthState>(
                   listener: (_, state) {
                     if (state is AuthAuthenticated) {
+                      FlutterNativeSplash.remove();
                       _navigator.pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (_) => BlocProvider.value(
@@ -101,6 +106,7 @@ class _MyAppState extends State<MyApp> {
                         (_) => false,
                       );
                     } else if (state is AuthUnauthenticated) {
+                      FlutterNativeSplash.remove();
                       _navigator.pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (_) => const LoginPage(),
