@@ -7,6 +7,7 @@ import 'package:sia_app/core/service_locator.dart';
 import 'package:sia_app/data/models/user_detail.dart';
 import 'package:sia_app/ui/pages/jadwal.dart';
 import 'package:sia_app/ui/pages/kehadiran.dart';
+import 'package:sia_app/ui/pages/setting.dart';
 import 'package:sia_app/ui/widgets/shimmer.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,8 +35,7 @@ class _HomePageState extends State<HomePage> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Selamat Datang',
-                  style: Theme.of(context).textTheme.bodySmall),
+              Text('Selamat Datang', style: Theme.of(context).textTheme.bodySmall),
               BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
                 if (state is HomeSuccess) {
                   _userDetail = state.userDetail;
@@ -49,6 +49,18 @@ class _HomePageState extends State<HomePage> {
               }),
             ],
           ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => const SettingPage(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.settings),
+            )
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -59,8 +71,7 @@ class _HomePageState extends State<HomePage> {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(25, 15, 25, 25),
                 sliver: SliverToBoxAdapter(
-                  child: BlocBuilder<HomeBloc, HomeState>(
-                      builder: (context, state) {
+                  child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
                     if (state is HomeSuccess) {
                       _userDetail = state.userDetail;
                     }
@@ -82,8 +93,7 @@ class _HomePageState extends State<HomePage> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => BlocProvider<ScheduleBloc>(
-                                create: (context) => sl<ScheduleBloc>()
-                                  ..add(const FetchSchedule()),
+                                create: (context) => sl<ScheduleBloc>()..add(const FetchSchedule()),
                                 child: const JadwalPage(),
                               ),
                             ),
@@ -97,8 +107,7 @@ class _HomePageState extends State<HomePage> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => BlocProvider<AttendanceBloc>(
-                                create: (context) => sl<AttendanceBloc>()
-                                  ..add(FetchAttendance()),
+                                create: (context) => sl<AttendanceBloc>()..add(FetchAttendance()),
                                 child: const KehadiranPage(),
                               ),
                             ),
@@ -110,9 +119,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 5,
-                    crossAxisSpacing: 23,
+                    crossAxisSpacing: 18,
                     mainAxisSpacing: 10,
-                    childAspectRatio: 0.56,
+                    childAspectRatio: 0.5,
                   ),
                 ),
               ),
@@ -160,9 +169,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 9),
               Text(
                 'Pull to Refresh',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.error),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.error),
               ),
             ],
           ),
@@ -233,8 +240,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Text(
                     'IPK ${_userDetail?.ipk} | SKS ${_userDetail?.sksTempuh}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary),
+                    style:
+                        Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ],
               ),
@@ -265,6 +272,7 @@ class PageSelector extends StatelessWidget {
       child: Column(
         children: [
           Container(
+            // width: 60,
             height: 50,
             constraints: const BoxConstraints(maxWidth: 50),
             margin: const EdgeInsets.only(bottom: 4),
