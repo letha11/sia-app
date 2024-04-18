@@ -15,8 +15,17 @@ class DioClient {
     required LocalDBRepository localDBRepository,
   }) {
     _dio = dio ?? Dio(_options);
+    _dio.interceptors.add(_acceptJsonOnlyInterceptor());
     _localDB = localDBRepository;
   }
+
+  InterceptorsWrapper _acceptJsonOnlyInterceptor() =>
+      InterceptorsWrapper(onRequest:
+          (RequestOptions options, RequestInterceptorHandler handler) {
+        options.headers['Accept'] = 'application/json';
+        options.headers['Content-Type'] = 'application/json';
+        return handler.next(options);
+      });
 
   InterceptorsWrapper _tokenInterceptor() => InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
