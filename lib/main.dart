@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -15,10 +18,22 @@ import 'package:sia_app/ui/pages/login.dart';
 
 void main() async {
   await Hive.initFlutter();
-  
+
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  
+
+  await Firebase.initializeApp();
+
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+  // async error
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   initialize(); // getit
 
   runApp(const MyApp());
@@ -33,18 +48,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _navigatorKey = GlobalKey<NavigatorState>();
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   late final StreamSubscription<List<ConnectivityResult>> subscription;
 
   NavigatorState get _navigator => _navigatorKey.currentState!;
 
   @override
   void initState() {
-    subscription = Connectivity()
-        // .onConnectivityChanged.skip(1)
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> result) {
+    subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
       if (result.contains(ConnectivityResult.none)) {
         scaffoldMessengerKey.currentState?.showSnackBar(
           SnackBar(
@@ -53,8 +64,7 @@ class _MyAppState extends State<MyApp> {
               textAlign: TextAlign.center,
             ),
             behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
             margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
           ),
         );
@@ -126,7 +136,7 @@ class _MyAppState extends State<MyApp> {
         onGenerateRoute: (_) => MaterialPageRoute(
           builder: (_) => Container(
             color: Colors.white,
-          ), // TODO: should be changed to splash screen / splash page
+          ),
         ),
       ),
     );

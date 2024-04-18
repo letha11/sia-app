@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1016311512981",
+    "project_id": "sia-app-f2f94",
+    "storage_bucket": "sia-app-f2f94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016311512981:android:4f07a811e43ddf755a809c",
+        "android_client_info": {
+          "package_name": "com.example.sia_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrtI0qJpMiy8iWBfvDY3VHt8yt6IFQcZ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
