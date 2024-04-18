@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class Connection {
@@ -13,7 +15,12 @@ class Connection {
         connection.contains(ConnectivityResult.ethernet) ||
         connection.contains(ConnectivityResult.other) ||
         connection.contains(ConnectivityResult.vpn)) {
-      return true;
+      try {
+        final result = await InternetAddress.lookup("example.com");
+        return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+      } on SocketException catch (_) {
+        return false;
+      }
     }
 
     return false;
