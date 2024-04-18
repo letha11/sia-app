@@ -14,6 +14,7 @@ void main() {
   String pendidikanAsal = "SMU";
   String periodeMasuk = "Semester Gasal 2022";
   String semester = "4";
+  String pictureUrl = '';
   String sksTempuh = "66";
   String status = "Aktif";
   bool success = true;
@@ -35,6 +36,7 @@ void main() {
         "pendidikan_asal": pendidikanAsal,
         "periode_masuk": periodeMasuk,
         "semester": semester,
+        "picture_url": pictureUrl,
         "sks_tempuh": sksTempuh,
         "status": status,
       },
@@ -59,6 +61,7 @@ void main() {
             periodeMasuk: periodeMasuk,
             semester: semester,
             sksTempuh: sksTempuh,
+            pictureUrl: pictureUrl,
             status: status,
             success: success),
         isA<UserDetail>()
@@ -99,6 +102,7 @@ void main() {
           periodeMasuk: periodeMasuk,
           semester: semester,
           sksTempuh: sksTempuh,
+          pictureUrl: pictureUrl,
           status: status,
           success: success);
 

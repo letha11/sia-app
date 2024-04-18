@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sia_app/bloc/attendance/attendance_bloc.dart';
@@ -193,10 +194,19 @@ class _HomePageState extends State<HomePage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Flexible(
+                  Flexible(
                     flex: 2,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.grey,
+                    child: CachedNetworkImage(
+                      imageUrl: _userDetail?.pictureUrl ?? '',
+                      errorListener: (err) {},
+                      imageBuilder: (_, imageProvider) => CircleAvatar(
+                        backgroundImage: imageProvider,
+                      ),
+                      placeholder: (context, url) => const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                        backgroundImage: AssetImage('assets/images/user.png'),
+                        backgroundColor: Colors.grey,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 10),

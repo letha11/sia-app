@@ -15,6 +15,7 @@ class UserDetail extends Equatable {
     required this.periodeMasuk,
     required this.semester,
     required this.sksTempuh,
+    required this.pictureUrl,
     required this.status,
     required this.success,
   });
@@ -32,6 +33,7 @@ class UserDetail extends Equatable {
   late final String periodeMasuk;
   late final String semester;
   late final String sksTempuh;
+  late final String pictureUrl;
   late final String status;
   late final bool success;
 
@@ -50,6 +52,7 @@ class UserDetail extends Equatable {
     pendidikanAsal = data['pendidikan_asal'];
     periodeMasuk = data['periode_masuk'];
     semester = data['semester'];
+    pictureUrl = data['picture_url'];
     sksTempuh = data['sks_tempuh'];
     status = data['status'];
   }
@@ -70,6 +73,7 @@ class UserDetail extends Equatable {
     dataJson['data']['pendidikan_asal'] = pendidikanAsal;
     dataJson['data']['periode_masuk'] = periodeMasuk;
     dataJson['data']['semester'] = semester;
+    dataJson['data']['picture_url'] = pictureUrl;
     dataJson['data']['sks_tempuh'] = sksTempuh;
     dataJson['data']['status'] = status;
     return dataJson;
@@ -90,6 +94,7 @@ class UserDetail extends Equatable {
         periodeMasuk,
         semester,
         sksTempuh,
+        pictureUrl,
         status,
         success,
       ];

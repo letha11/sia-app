@@ -34,6 +34,7 @@ void main() {
     periodeMasuk: "Semester Gasal 2022",
     semester: "4",
     sksTempuh: "66",
+    pictureUrl: '',
     status: "Aktif",
     success: true,
   );
