@@ -1,3 +1,9 @@
+/// possible values: "DEV", "PROD"
+const String appEnv = String.fromEnvironment("APP_ENV", defaultValue: "DEV");
+const String baseUrlDev = String.fromEnvironment("BASE_URL", defaultValue: "https://sia-mercu-scraping.vercel.app/api");
+const String baseUrlProd =
+    String.fromEnvironment("BASE_URL", defaultValue: "https://sia-mercu-scraping.vercel.app/api");
+
 enum HiveKey {
   accessToken,
   refreshToken,
@@ -27,8 +33,6 @@ extension AttendanceStatusX on AttendanceStatus {
     }
   }
 }
-
-const String baseUrl = "https://sia-mercu-scraping.vercel.app/api";
 
 extension StringX on String {
   String capitalizeFirstCharacter() => this[0].toUpperCase() + substring(1);

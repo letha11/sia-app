@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:sia_app/core/environment.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';
 import 'package:sia_app/utils/constants.dart';
 
@@ -7,7 +8,7 @@ class DioClient {
   late final LocalDBRepository _localDB;
 
   final _options = BaseOptions(
-    baseUrl: baseUrl,
+    baseUrl: Environment.baseUrl,
   );
 
   DioClient({
