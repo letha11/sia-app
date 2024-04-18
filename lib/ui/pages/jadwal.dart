@@ -42,7 +42,7 @@ class _JadwalPageState extends State<JadwalPage> {
                       : null,
                   style: Theme.of(context).textButtonTheme.style,
                   child: Text(
-                    _pickedPeriode ?? _period?[0].label ?? "",
+                    _pickedPeriode ?? _period?.last.label ?? "",
                   ),
                 )
               ],
@@ -70,7 +70,7 @@ class _JadwalPageState extends State<JadwalPage> {
         ? state.schedule.periode.map(
             (p) {
               bool isSelected = p.label ==
-                  (_pickedPeriode ?? state.schedule.periode[0].label);
+                  (_pickedPeriode ?? state.schedule.periode.last.label);
               return Material(
                 color: Colors.transparent,
                 child: InkWell(
