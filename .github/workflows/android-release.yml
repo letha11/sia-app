@@ -3,7 +3,7 @@ name: "Android Build & Release"
 on:
   push:
     tags:
-      - "internal-v*.*.*"
+      - "*.*.*"
 
 jobs:
   build:
