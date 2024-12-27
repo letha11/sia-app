@@ -3,16 +3,20 @@ import 'package:sia_app/ui/widgets/attendance_status.dart';
 import 'package:sia_app/utils/constants.dart';
 
 class SubjectContainer extends StatelessWidget {
-  const SubjectContainer(
-      {super.key, required this.subject, required this.attendance});
+  const SubjectContainer({
+    super.key,
+    required this.subject,
+    required this.attendance,
+    this.presencePercentage = '0%',
+  });
 
   final String subject;
+  final String presencePercentage;
   final List<AttendanceStatusWidget> attendance;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // margin: const EdgeInsets.symmetric(horizontal: 25.0),
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
@@ -37,7 +41,7 @@ class SubjectContainer extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
-                  '100%',
+                  presencePercentage,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),

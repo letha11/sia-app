@@ -4,6 +4,7 @@ import 'package:sia_app/bloc/attendance/attendance_bloc.dart';
 import 'package:sia_app/ui/widgets/attendance_status.dart';
 import 'package:sia_app/ui/widgets/shimmer.dart';
 import 'package:sia_app/ui/widgets/subject_container.dart';
+import 'package:sia_app/utils/constants.dart';
 
 class KehadiranPage extends StatelessWidget {
   const KehadiranPage({super.key});
@@ -39,7 +40,8 @@ class KehadiranPage extends StatelessWidget {
                           attendance: [],
                         ),
                       ),
-                    ),Padding(
+                    ),
+                    Padding(
                       padding: EdgeInsets.symmetric(vertical: 9),
                       child: ShimmerLoadingIndicator(
                         isLoading: true,
@@ -48,7 +50,8 @@ class KehadiranPage extends StatelessWidget {
                           attendance: [],
                         ),
                       ),
-                    ),Padding(
+                    ),
+                    Padding(
                       padding: EdgeInsets.symmetric(vertical: 9),
                       child: ShimmerLoadingIndicator(
                         isLoading: true,
@@ -65,15 +68,24 @@ class KehadiranPage extends StatelessWidget {
                   state.attendance.data!.length,
                   (i) {
                     final kuliah = state.attendance.data![i];
+                    final absentNotStartedPresence = kuliah.perkuliahan!
+                        .where((element) =>
+                            element.kehadiran!.isAbsent ||
+                            element.kehadiran!.isNoClassYet)
+                        .length;
+                    final presencePercentage = (kuliah.perkuliahan?.length ??
+                                0) >
+                            0
+                        ? '${((kuliah.perkuliahan!.length - absentNotStartedPresence) / kuliah.perkuliahan!.length * 100).round()}%'
+                        : '0%';
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 9),
                       child: SubjectContainer(
                         subject: kuliah.namaMatkul!,
+                        presencePercentage: presencePercentage,
                         attendance:
                             List.generate(kuliah.perkuliahan!.length, (i) {
                           final perkuliahan = kuliah.perkuliahan![i];
-                          // print(perkuliahan.tanggal!.day);
-                          // print(perkuliahan.tanggal!.month);
                           return AttendanceStatusWidget(
                             text: perkuliahan.tanggal != null
                                 ? '${perkuliahan.tanggal!.day}/${perkuliahan.tanggal!.month} Ke-${perkuliahan.pertemuan!}'
@@ -114,7 +126,9 @@ class KehadiranPage extends StatelessWidget {
                       const SizedBox(height: 9),
                       Text(
                         'Pull to Refresh',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.error),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.error),
                       ),
                     ],
                   ),

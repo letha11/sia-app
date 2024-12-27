@@ -23,6 +23,10 @@ enum AttendanceStatus {
 }
 
 extension AttendanceStatusX on AttendanceStatus {
+bool get isPresent => this == AttendanceStatus.present;
+  bool get isAbsent => this == AttendanceStatus.absent;
+  bool get isNoClassYet => this == AttendanceStatus.noClassYet;
+
   String get valueAsString {
     if (this == AttendanceStatus.present) {
       return "Hadir";
