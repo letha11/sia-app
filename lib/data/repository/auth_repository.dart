@@ -7,9 +7,14 @@ abstract class AuthRepositoryA {
   Future<Either<Failure, (String token, String refreshToken)>> login({
     required String username,
     required String password,
+    required String captcha,
   });
 
   Future<Either<Failure, (String token, String refreshToken)>> refreshToken();
+
+  Future<Either<Failure, bool>> relogin({
+    required String captcha,
+  });
 }
 
 class AuthRepository extends AuthRepositoryA {
@@ -21,11 +26,13 @@ class AuthRepository extends AuthRepositoryA {
   Future<Either<Failure, (String token, String refreshToken)>> login({
     required String username,
     required String password,
+    required String captcha,
   }) async {
     try {
       final formData = FormData.fromMap({
         'username': username,
         'password': password,
+        'captcha': captcha,
       });
       final response = await _dioClient.dio.post(
         '/login',
@@ -60,6 +67,31 @@ class AuthRepository extends AuthRepositoryA {
     } on DioException catch (e) {
       final response = e.response;
 
+      if (response?.statusCode == 401) return Left(Unauthorized());
+
+      return Left(UnhandledFailure(e));
+    } catch (e) {
+      return Left(UnhandledFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> relogin({required String captcha}) async {
+    try {
+      final formData = FormData.fromMap({
+        'captcha': captcha,
+      });
+
+      final response = await _dioClient.dio.post(
+        '/relogin',
+        data: formData,
+      );
+
+      return Right(response.data['success']);
+    } on DioException catch (e) {
+      final response = e.response;
+
+      if (response?.statusCode == 400) return Left(InvalidCaptcha());
       if (response?.statusCode == 401) return Left(Unauthorized());
 
       return Left(UnhandledFailure(e));

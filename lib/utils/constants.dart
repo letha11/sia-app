@@ -1,8 +1,9 @@
 /// possible values: "DEV", "PROD"
 const String appEnv = String.fromEnvironment("APP_ENV", defaultValue: "DEV");
-const String baseUrlDev = String.fromEnvironment("BASE_URL", defaultValue: "https://sia-mercu-scraping.vercel.app/api");
-const String baseUrlProd =
-    String.fromEnvironment("BASE_URL", defaultValue: "https://sia-mercu-scraping.vercel.app/api");
+const String baseUrlDev = String.fromEnvironment("BASE_URL",
+    defaultValue: "http://10.0.2.2:5000/api");
+const String baseUrlProd = String.fromEnvironment("BASE_URL",
+    defaultValue: "https://sia-mercu-scraping.vercel.app/api");
 
 enum HiveKey {
   accessToken,
@@ -23,7 +24,7 @@ enum AttendanceStatus {
 }
 
 extension AttendanceStatusX on AttendanceStatus {
-bool get isPresent => this == AttendanceStatus.present;
+  bool get isPresent => this == AttendanceStatus.present;
   bool get isAbsent => this == AttendanceStatus.absent;
   bool get isNoClassYet => this == AttendanceStatus.noClassYet;
 

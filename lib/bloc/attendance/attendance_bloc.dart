@@ -35,7 +35,14 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
     final result = await _getAttendanceData(isConnected);
 
     await result.fold((err) async {
-      if (err is NoDataFailure) {
+      if (err is ReloginFailure) {
+        emit(
+          AttendanceFailed(
+            error: err,
+            errorMessage: "Silahkan masukkan captcha untuk login ulang",
+          ),
+        );
+      } else if (err is NoDataFailure) {
         emit(AttendanceFailed(errorMessage: err.defaultMessage));
       } else if (err is Unauthorized) {
         emit(AttendanceFailed(errorMessage: err.defaultMessage));
@@ -53,8 +60,7 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
         } catch (e, stackTrace) {
           emit(AttendanceFailed(
             error: err,
-            errorMessage:
-                "Terjadi kesalahan:\n$stackTrace",
+            errorMessage: "Terjadi kesalahan:\n$stackTrace",
           ));
         }
       } else {

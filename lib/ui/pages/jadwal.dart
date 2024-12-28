@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sia_app/bloc/schedule/schedule_bloc.dart';
+import 'package:sia_app/core/failures.dart';
 import 'package:sia_app/data/models/schedule.dart';
+import 'package:sia_app/ui/widgets/captcha_dialog.dart';
 import 'package:sia_app/ui/widgets/schedule_day_widget.dart';
 import 'package:sia_app/ui/widgets/shimmer.dart';
 import 'package:sia_app/ui/widgets/subject_tile_item.dart';
@@ -23,7 +25,22 @@ class _JadwalPageState extends State<JadwalPage> {
   @override
   Widget build(BuildContext context) {
     return Shimmer(
-      child: BlocBuilder<ScheduleBloc, ScheduleState>(
+      child: BlocConsumer<ScheduleBloc, ScheduleState>(
+        listener: (context, state) {
+          if (state is! ScheduleFailed) return;
+          if (state.error is! ReloginFailure) return;
+
+          CaptchaDialog.show(
+            context: context,
+            onSuccess: () {
+              Period? periode =
+                  _period?.firstWhere((p) => p.label == _pickedPeriode);
+              context.read<ScheduleBloc>().add(
+                    FetchSchedule(periode: periode?.value),
+                  );
+            },
+          );
+        },
         builder: (context, state) {
           if (state is ScheduleSuccess) {
             _period = state.schedule.periode;
@@ -47,15 +64,30 @@ class _JadwalPageState extends State<JadwalPage> {
                 )
               ],
             ),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+            body: RefreshIndicator(
+              onRefresh: () async {
+                context.read<ScheduleBloc>().add(
+                      FetchSchedule(periode: _pickedPeriode),
+                    );
+              },
               child: SizedBox(
                 width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: state is ScheduleFailed
-                      ? CrossAxisAlignment.center
-                      : CrossAxisAlignment.start,
-                  children: _buildChildren(state),
+                height: double.infinity,
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics(),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: state is ScheduleFailed
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.start,
+                      children: _buildChildren(state),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -230,19 +262,11 @@ class _JadwalPageState extends State<JadwalPage> {
           maxLines: 3,
         ),
         const SizedBox(height: 15),
-        ElevatedButton(
-          onPressed: () {
-            context.read<ScheduleBloc>().add(
-                  FetchSchedule(periode: _pickedPeriode),
-                );
-          },
-          child: Text(
-            'Refresh',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-          ),
+        Text(
+          'Pull to Refresh',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.error),
         ),
       ];
     }

@@ -36,11 +36,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     await result.fold(
       (err) async {
-        if (err is Unauthorized) {
+        if (err is ReloginFailure) {
+          emit(
+            HomeFailed(
+              error: err,
+              errorMessage: "Silahkan masukkan captcha untuk login ulang",
+            ),
+          );
+        } else if (err is Unauthorized) {
           emit(
             HomeFailed(
               error: err,
               errorMessage: "Silahkan login ulang untuk mengakses halaman ini",
+              // errorMessage: "Tapi boong",
             ),
           );
         } else if (err is NoDataFailure) {
@@ -64,8 +72,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             emit(
               HomeFailed(
                 error: err,
-                errorMessage:
-                    "Terjadi kesalahan:\n$stackTrace",
+                errorMessage: "Terjadi kesalahan:\n$stackTrace",
               ),
             );
           }

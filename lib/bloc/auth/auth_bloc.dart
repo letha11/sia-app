@@ -26,6 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<Login>(_onLogin);
     on<AuthCheckStatus>(_onAuthCheckStatus);
     on<Logout>(_onLogout);
+    on<ReLogin>(_onReLogin);
   }
 
   _onLogout(Logout event, Emitter<AuthState> emit) async {
@@ -65,12 +66,52 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  _onReLogin(ReLogin event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+
+    final result = await _authRepository.relogin(captcha: event.captcha);
+
+    result.fold(
+      (err) {
+        if (err is InvalidCaptcha) {
+          emit(
+            AuthFailed(
+              error: err,
+              errorMessage: 'Captcha salah, silahkan coba lagi',
+            ),
+          );
+        } else {
+          emit(
+            AuthFailed(
+              error: err,
+              errorMessage:
+                  'Terjadi kesalahan terhadap server, silahkan coba lagi nanti',
+            ),
+          );
+        }
+      },
+      (data) {
+        bool success = data;
+
+        if (success) return emit(AuthSuccess());
+
+        emit(
+          AuthFailed(
+            error: ReloginFailure(),
+            errorMessage: ReloginFailure().defaultMessage,
+          ),
+        );
+      },
+    );
+  }
+
   _onLogin(Login event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
 
     final response = await _authRepository.login(
       username: event.username,
       password: event.password,
+      captcha: event.captcha,
     );
 
     response.fold(
@@ -91,10 +132,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           );
         } else {
           final message = (err as UnhandledFailure).exception ?? '';
+          debugPrint("AuthBloc: ${message.toString()}");
           emit(
             AuthFailed(
               error: err,
-              errorMessage: 'Terjadi kesalahan\n$message',
+              errorMessage:
+                  'Terjadi kesalahan terhadap server, silahkan coba lagi nanti',
             ),
           );
         }

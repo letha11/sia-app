@@ -4,11 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sia_app/bloc/attendance/attendance_bloc.dart';
 import 'package:sia_app/bloc/home/home_bloc.dart';
 import 'package:sia_app/bloc/schedule/schedule_bloc.dart';
+import 'package:sia_app/core/failures.dart';
 import 'package:sia_app/core/service_locator.dart';
 import 'package:sia_app/data/models/user_detail.dart';
 import 'package:sia_app/ui/pages/jadwal.dart';
 import 'package:sia_app/ui/pages/kehadiran.dart';
 import 'package:sia_app/ui/pages/setting.dart';
+import 'package:sia_app/ui/widgets/captcha_dialog.dart';
 import 'package:sia_app/ui/widgets/shimmer.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,7 +38,8 @@ class _HomePageState extends State<HomePage> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Selamat Datang', style: Theme.of(context).textTheme.bodySmall),
+              Text('Selamat Datang',
+                  style: Theme.of(context).textTheme.bodySmall),
               BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
                 if (state is HomeSuccess) {
                   _userDetail = state.userDetail;
@@ -52,7 +55,7 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             IconButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (ctx) => const SettingPage(),
@@ -63,70 +66,91 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            context.read<HomeBloc>().add(FetchUserDetailEvent());
+        body: BlocListener<HomeBloc, HomeState>(
+          listener: (BuildContext context, state) async {
+            if (state is! HomeFailed) return;
+
+            if (state.error is! ReloginFailure) return;
+
+            CaptchaDialog.show(
+              context: context,
+              onSuccess: () => context.read<HomeBloc>().add(
+                    FetchUserDetailEvent(),
+                  ),
+            );
           },
-          child: CustomScrollView(
-            slivers: [
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(25, 15, 25, 25),
-                sliver: SliverToBoxAdapter(
-                  child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-                    if (state is HomeSuccess) {
-                      _userDetail = state.userDetail;
-                    }
-                    return ShimmerLoadingIndicator(
-                      isLoading: state is HomeLoading,
-                      child: _buildDetailCard(state),
-                    );
-                  }),
-                ),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              context.read<HomeBloc>().add(FetchUserDetailEvent());
+            },
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
               ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                sliver: SliverGrid(
-                  delegate: SliverChildListDelegate(
-                    [
-                      PageSelector(
-                        title: 'Jadwal',
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => BlocProvider<ScheduleBloc>(
-                                create: (context) => sl<ScheduleBloc>()..add(const FetchSchedule()),
-                                child: const JadwalPage(),
-                              ),
-                            ),
-                          );
-                        },
-                        icon: Icons.calendar_month_rounded,
-                      ),
-                      PageSelector(
-                        title: 'Kehadiran',
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => BlocProvider<AttendanceBloc>(
-                                create: (context) => sl<AttendanceBloc>()..add(FetchAttendance()),
-                                child: const KehadiranPage(),
-                              ),
-                            ),
-                          );
-                        },
-                        icon: Icons.check_circle_rounded,
-                      ),
-                    ],
-                  ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5,
-                    crossAxisSpacing: 18,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.5,
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(25, 15, 25, 25),
+                  sliver: SliverToBoxAdapter(
+                    child: BlocBuilder<HomeBloc, HomeState>(
+                        builder: (context, state) {
+                      if (state is HomeSuccess) {
+                        _userDetail = state.userDetail;
+                      }
+                      return ShimmerLoadingIndicator(
+                        isLoading: state is HomeLoading,
+                        child: _buildDetailCard(state),
+                      );
+                    }),
                   ),
                 ),
-              ),
-            ],
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  sliver: SliverGrid(
+                    delegate: SliverChildListDelegate(
+                      [
+                        PageSelector(
+                          title: 'Jadwal',
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider<ScheduleBloc>(
+                                  create: (context) => sl<ScheduleBloc>()
+                                    ..add(const FetchSchedule()),
+                                  child: const JadwalPage(),
+                                ),
+                              ),
+                            );
+                          },
+                          icon: Icons.calendar_month_rounded,
+                        ),
+                        PageSelector(
+                          title: 'Kehadiran',
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider<AttendanceBloc>(
+                                  create: (context) => sl<AttendanceBloc>()
+                                    ..add(FetchAttendance()),
+                                  child: const KehadiranPage(),
+                                ),
+                              ),
+                            );
+                          },
+                          icon: Icons.check_circle_rounded,
+                        ),
+                      ],
+                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
+                      crossAxisSpacing: 18,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -170,7 +194,9 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 9),
               Text(
                 'Pull to Refresh',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.error),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.error),
               ),
             ],
           ),
@@ -202,7 +228,8 @@ class _HomePageState extends State<HomePage> {
                       imageBuilder: (_, imageProvider) => CircleAvatar(
                         backgroundImage: imageProvider,
                       ),
-                      placeholder: (context, url) => const CircularProgressIndicator(),
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
                       errorWidget: (context, url, error) => const CircleAvatar(
                         backgroundImage: AssetImage('assets/images/user.png'),
                         backgroundColor: Colors.grey,
@@ -250,8 +277,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Text(
                     'IPK ${_userDetail?.ipk} | SKS ${_userDetail?.sksTempuh}',
-                    style:
-                        Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ],
               ),

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class UserDetail extends Equatable {
+  // ignore: prefer_const_constructors_in_immutables
   UserDetail({
     required this.fakultas,
     required this.ipk,

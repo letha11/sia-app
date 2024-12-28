@@ -56,12 +56,10 @@ class AppTheme {
       primary: Color(0xFF008DDA),
       secondary: Color(0xFF242424),
       surface: Color(0xFFFFFFFF),
-      background: Color(0xFFFFFFFF),
       error: Color(0xFFD32F2F),
       onPrimary: Color(0xFFFFFFFF),
       onSecondary: Color(0xFFFFFFFF),
       onSurface: Color(0xFF242424),
-      onBackground: Color(0xFF242424),
       onError: Color(0xFFFFFFFF),
     ),
     appBarTheme: const AppBarTheme(
@@ -116,29 +114,29 @@ class AppTheme {
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.transparent),
-        overlayColor: MaterialStateProperty.all(Colors.transparent),
-        foregroundColor: MaterialStateProperty.all(const Color(0xFF242424)),
+        backgroundColor: WidgetStateProperty.all(Colors.transparent),
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+        foregroundColor: WidgetStateProperty.all(const Color(0xFF242424)),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor:
-            MaterialStateProperty.all<Color>(const Color(0xFF008DDA)),
-        overlayColor: MaterialStateProperty.all<Color>(const Color(0xFF005F8A)),
+            WidgetStateProperty.all<Color>(const Color(0xFF008DDA)),
+        overlayColor: WidgetStateProperty.all<Color>(const Color(0xFF005F8A)),
         foregroundColor:
-            MaterialStateProperty.all<Color>(const Color(0xFFFFFFFF)),
-        textStyle: MaterialStateProperty.all<TextStyle>(
+            WidgetStateProperty.all<Color>(const Color(0xFFFFFFFF)),
+        textStyle: WidgetStateProperty.all<TextStyle>(
           const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             fontFamily: font,
           ),
         ),
-        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         ),
-        shape: MaterialStateProperty.all<OutlinedBorder>(
+        shape: WidgetStateProperty.all<OutlinedBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
           ),

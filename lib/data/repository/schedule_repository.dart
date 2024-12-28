@@ -27,7 +27,13 @@ class ScheduleRepository extends ScheduleRepositoryA {
     } on DioException catch (e) {
       final response = e.response;
 
-      if (response?.statusCode == 401) return Left(Unauthorized());
+      if (response?.statusCode == 401) {
+        bool relogNeeded = response?.data?['relog_url'] != null;
+
+        if (relogNeeded) return Left(ReloginFailure());
+
+        return Left(Unauthorized());
+      }
       if (response?.statusCode == 503) return Left(TimeoutFailure());
 
       return Left(UnhandledFailure(e));

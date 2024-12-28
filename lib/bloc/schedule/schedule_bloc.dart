@@ -35,7 +35,14 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
     await result.fold(
       (err) async {
-        if (err is Unauthorized) {
+        if (err is ReloginFailure) {
+          emit(
+            ScheduleFailed(
+              error: err,
+              errorMessage: "Silahkan masukkan captcha untuk login ulang",
+            ),
+          );
+        } else if (err is Unauthorized) {
           emit(
             ScheduleFailed(
               error: err,

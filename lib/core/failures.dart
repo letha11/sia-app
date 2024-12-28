@@ -19,6 +19,18 @@ class UnhandledFailure extends Failure {
   }
 }
 
+class ReloginFailure extends Failure {
+  final defaultMessage = "Silahkan memasukkan captcha untuk login ulang";
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() {
+    return "ReloginFailure";
+  }
+}
+
 class InvalidCredentials extends Failure {
   @override
   List<Object?> get props => [];
@@ -39,6 +51,16 @@ class InvalidInput extends Failure {
   }
 }
 
+class InvalidCaptcha extends Failure {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  String toString() {
+    return "Invalid Captcha";
+  }
+}
+
 class Unauthorized extends Failure {
   final defaultMessage = "Silahkan login ulang untuk mengakses halaman ini";
 
@@ -52,8 +74,9 @@ class Unauthorized extends Failure {
 }
 
 class NoDataFailure extends Failure {
-  final defaultMessage = "Kamu sedang offline, periksa koneksi kamu lalu coba lagi";
-  
+  final defaultMessage =
+      "Kamu sedang offline, periksa koneksi kamu lalu coba lagi";
+
   @override
   String toString() {
     return "No Data";
