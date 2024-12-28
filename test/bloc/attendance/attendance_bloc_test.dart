@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
@@ -154,7 +152,7 @@ void main() {
           const AttendanceFailed(errorMessage: "x_x"),
         ],
       );
-      
+
       blocTest(
         "should emit [AttendanceLoading, AttendanceFailed] when the result of `attendanceRepository` are Left(TimeoutFailure) and `localDBRepository.get` are stored data but `Attendance` failed to parse it",
         setUp: () async {

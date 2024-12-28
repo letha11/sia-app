@@ -49,6 +49,7 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
   _i3.Future<_i5.Either<_i6.Failure, (String, String)>> login({
     required String? username,
     required String? password,
+    required String? captcha,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -57,6 +58,7 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
           {
             #username: username,
             #password: password,
+            #captcha: captcha,
           },
         ),
         returnValue:
@@ -69,6 +71,7 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
             {
               #username: username,
               #password: password,
+              #captcha: captcha,
             },
           ),
         )),
@@ -82,6 +85,7 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
             {
               #username: username,
               #password: password,
+              #captcha: captcha,
             },
           ),
         )),
@@ -113,6 +117,36 @@ class MockAuthRepository extends _i1.Mock implements _i4.AuthRepository {
           ),
         )),
       ) as _i3.Future<_i5.Either<_i6.Failure, (String, String)>>);
+
+  @override
+  _i3.Future<_i5.Either<_i6.Failure, bool>> relogin(
+          {required String? captcha}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #relogin,
+          [],
+          {#captcha: captcha},
+        ),
+        returnValue: _i3.Future<_i5.Either<_i6.Failure, bool>>.value(
+            _i7.dummyValue<_i5.Either<_i6.Failure, bool>>(
+          this,
+          Invocation.method(
+            #relogin,
+            [],
+            {#captcha: captcha},
+          ),
+        )),
+        returnValueForMissingStub:
+            _i3.Future<_i5.Either<_i6.Failure, bool>>.value(
+                _i7.dummyValue<_i5.Either<_i6.Failure, bool>>(
+          this,
+          Invocation.method(
+            #relogin,
+            [],
+            {#captcha: captcha},
+          ),
+        )),
+      ) as _i3.Future<_i5.Either<_i6.Failure, bool>>);
 }
 
 /// A class which mocks [Connection].

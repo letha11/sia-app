@@ -123,15 +123,85 @@ void main() {
     );
   });
 
+  group('ReLogin', () {
+    blocTest(
+      'should emit [AuthLoading, AuthFailed] when authRepository.relogin return an `Left(InvalidCaptcha)`',
+      build: () => bloc,
+      act: (b) => b.add(ReLogin(captcha: 'asd')),
+      setUp: () {
+        provideDummy<Either<Failure, bool>>(Left(InvalidCaptcha()));
+        when(authRepository.relogin(captcha: anyNamed('captcha')))
+            .thenAnswer((_) async => Left(InvalidCaptcha()));
+      },
+      expect: () => <AuthState>[
+        AuthLoading(),
+        AuthFailed(errorMessage: 'anything!'),
+      ],
+    );
+
+    blocTest(
+      'should emit [AuthLoading, AuthFailed] when authRepository.relogin return an `Left(UnhandledError)`',
+      build: () => bloc,
+      act: (b) => b.add(ReLogin(captcha: 'asd')),
+      setUp: () {
+        provideDummy<Either<Failure, bool>>(
+          Left(UnhandledFailure(Exception('x_x'))),
+        );
+        when(authRepository.relogin(captcha: anyNamed('captcha')))
+            .thenAnswer((_) async => Left(UnhandledFailure(Exception('x_x'))));
+      },
+      expect: () => <AuthState>[
+        AuthLoading(),
+        AuthFailed(errorMessage: 'anything!'),
+      ],
+    );
+
+    blocTest(
+      'should emit [AuthLoading, AuthFailed] when authRepository.relogin return `Right(false)`',
+      build: () => bloc,
+      act: (b) => b.add(ReLogin(captcha: 'asd')),
+      setUp: () {
+        provideDummy<Either<Failure, bool>>(
+          Right(false),
+        );
+        when(authRepository.relogin(captcha: anyNamed('captcha')))
+            .thenAnswer((_) async => Right(false));
+      },
+      expect: () => <AuthState>[
+        AuthLoading(),
+        AuthFailed(errorMessage: 'anything!'),
+      ],
+    );
+
+    blocTest(
+      'should emit [AuthLoading, AuthSuccess] when authRepository.relogin return `Right(true)`',
+      build: () => bloc,
+      act: (b) => b.add(ReLogin(captcha: 'asd')),
+      setUp: () {
+        provideDummy<Either<Failure, bool>>(
+          Right(true),
+        );
+        when(authRepository.relogin(captcha: anyNamed('captcha')))
+            .thenAnswer((_) async => Right(true));
+      },
+      expect: () => <AuthState>[
+        AuthLoading(),
+        AuthSuccess(),
+      ],
+    );
+  });
+
   group('Login', () {
     blocTest(
       'should emit [AuthLoading, AuthFailed] when authRepository.login return an `Left(InvalidCredentials)`',
       build: () => bloc,
-      act: (b) => b.add(Login(username: 'asd', password: 'asd')),
+      act: (b) =>
+          b.add(Login(username: 'asd', password: 'asd', captcha: 'asd')),
       setUp: () {
         when(authRepository.login(
           username: anyNamed('username'),
           password: anyNamed('password'),
+          captcha: anyNamed('captcha'),
         )).thenAnswer((_) async => Left(InvalidCredentials()));
       },
       expect: () => <AuthState>[
@@ -143,11 +213,16 @@ void main() {
     blocTest(
       'should emit [AuthLoading, AuthFailed] when authRepository.login return an `Left(InvalidInput)`',
       build: () => bloc,
-      act: (b) => b.add(Login(username: 'asd', password: 'asd')),
+      act: (b) => b.add(Login(
+        username: 'asd',
+        password: 'asd',
+        captcha: 'bcd4',
+      )),
       setUp: () {
         when(authRepository.login(
           username: anyNamed('username'),
           password: anyNamed('password'),
+          captcha: anyNamed('captcha'),
         )).thenAnswer((_) async => Left(InvalidInput()));
       },
       expect: () => <AuthState>[
@@ -159,11 +234,16 @@ void main() {
     blocTest(
       'should emit [AuthLoading, AuthFailed] when authRepository.login return an `Left(UnhandledError)`',
       build: () => bloc,
-      act: (b) => b.add(Login(username: 'asd', password: 'asd')),
+      act: (b) => b.add(Login(
+        username: 'asd',
+        password: 'asd',
+        captcha: 'bcd4',
+      )),
       setUp: () {
         when(authRepository.login(
           username: anyNamed('username'),
           password: anyNamed('password'),
+          captcha: anyNamed('captcha'),
         )).thenAnswer((_) async => Left(UnhandledFailure(Exception('x_x'))));
       },
       expect: () => <AuthState>[
@@ -175,11 +255,16 @@ void main() {
     blocTest(
       'should call `localDBRepository.store` and emit [AuthLoading, AuthSuccess] when authRepository.login return an `Right(token)`',
       build: () => bloc,
-      act: (b) => b.add(Login(username: 'asd', password: 'asd')),
+      act: (b) => b.add(Login(
+        username: 'asd',
+        password: 'asd',
+        captcha: 'bcd4',
+      )),
       setUp: () {
         when(authRepository.login(
           username: anyNamed('username'),
           password: anyNamed('password'),
+          captcha: anyNamed('captcha'),
         )).thenAnswer((_) async => const Right(('token', 'refreshToken')));
       },
       verify: (_) {

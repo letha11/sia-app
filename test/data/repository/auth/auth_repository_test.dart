@@ -43,8 +43,8 @@ void main() {
         server.throws(500, DioException(requestOptions: RequestOptions()));
       });
 
-      final result =
-          await authRepository.login(username: 'dummy', password: 'dummy');
+      final result = await authRepository.login(
+          username: 'dummy', password: 'dummy', captcha: 'abcd4');
 
       expect(result.isLeft(), true);
       result.fold(
@@ -58,8 +58,8 @@ void main() {
         () async {
       dioAdapter.onPost(route, (server) => server.reply(400, ''));
 
-      final result =
-          await authRepository.login(username: 'dummy', password: 'dummy');
+      final result = await authRepository.login(
+          username: 'dummy', password: 'dummy', captcha: 'abcd4');
 
       expect(result.isLeft(), true);
       expect(result, equals(Left(InvalidInput())));
@@ -70,8 +70,8 @@ void main() {
         () async {
       dioAdapter.onPost(route, (server) => server.reply(401, ''));
 
-      final result =
-          await authRepository.login(username: 'dummy', password: 'dummy');
+      final result = await authRepository.login(
+          username: 'dummy', password: 'dummy', captcha: 'abcd4');
 
       expect(result.isLeft(), true);
       expect(result, equals(Left(InvalidCredentials())));
@@ -93,8 +93,8 @@ void main() {
         ),
       );
 
-      final result =
-          await authRepository.login(username: 'dummy', password: 'dummy');
+      final result = await authRepository.login(
+          username: 'dummy', password: 'dummy', captcha: 'abcd4');
 
       expect(result.isRight(), true);
       expect(result, equals(const Right((token, refreshToken))));

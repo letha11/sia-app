@@ -66,7 +66,6 @@ void main() {
     "success": true
   };
 
-
   late Dio dio;
   late DioAdapter dioAdapter;
   late MockLocalDBRepository localDBRepository;
@@ -126,9 +125,32 @@ void main() {
     });
 
     test(
+        'should return Left(ReloginFailure) when servers return a response with a 401 status code and "relog_url" key exist in the data',
+        () async {
+      dioAdapter.onGet(
+        route,
+        (server) => server.reply(
+          401,
+          {"relog_url": "https://example.com/relog"},
+        ),
+      );
+
+      final result = await attendanceRepository.getAttendance();
+
+      expect(result.isLeft(), true);
+      expect(result, equals(Left(ReloginFailure())));
+    });
+
+    test(
         'should return Left(Unauthorized) when servers return a response with a 401 status code',
         () async {
-      dioAdapter.onGet(route, (server) => server.reply(401, ''));
+      dioAdapter.onGet(
+        route,
+        (server) => server.reply(
+          401,
+          {"abc": "abc"},
+        ),
+      );
 
       final result = await attendanceRepository.getAttendance();
 

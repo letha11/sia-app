@@ -120,9 +120,32 @@ void main() {
     const route = "/jadwal";
 
     test(
+        'should return Left(ReloginFailure) when request return with 401 status code and "relog_url" key exist in the data',
+        () async {
+      dioAdapter.onGet(
+        route,
+        (server) => server.reply(
+          401,
+          {"relog_url": "https://example.com/relog"},
+        ),
+      );
+
+      final result = await scheduleRepository.getSchedule();
+
+      expect(result.isLeft(), true);
+      expect(result, equals(Left(ReloginFailure())));
+    });
+
+    test(
         'should return Left(Unauthorized) when request return with 401 status code',
         () async {
-      dioAdapter.onGet(route, (server) => server.reply(401, ""));
+      dioAdapter.onGet(
+        route,
+        (server) => server.reply(
+          401,
+          {"abc": "abc"},
+        ),
+      );
 
       final result = await scheduleRepository.getSchedule();
 
