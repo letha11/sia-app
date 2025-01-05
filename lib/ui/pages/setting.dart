@@ -22,10 +22,11 @@ class SettingPage extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                context.read<AuthBloc>().add(Logout());
+                  context.read<AuthBloc>().add(Logout());
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 10),
                   decoration: const BoxDecoration(
                     border: Border(
                       bottom: BorderSide(

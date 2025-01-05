@@ -5,7 +5,8 @@ import 'package:mockito/annotations.dart';
 import 'package:sia_app/core/dio_client.dart';
 import 'package:sia_app/data/repository/local/local_db_repository.dart';
 
-@GenerateNiceMocks([MockSpec<Dio>(), MockSpec<LocalDBRepository>(), MockSpec<Interceptors>()])
+@GenerateNiceMocks(
+    [MockSpec<Dio>(), MockSpec<LocalDBRepository>(), MockSpec<Interceptors>()])
 import 'dio_client_test.mocks.dart';
 
 void main() {

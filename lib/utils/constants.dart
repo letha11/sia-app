@@ -11,6 +11,7 @@ enum HiveKey {
   detailJson,
   attendanceJson,
   scheduleJson,
+  transcriptJson,
 }
 
 extension HiveKeyX on HiveKey {

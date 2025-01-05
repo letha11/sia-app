@@ -1,15 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:sia_app/bloc/attendance/attendance_bloc.dart';
 import 'package:sia_app/bloc/home/home_bloc.dart';
 import 'package:sia_app/bloc/schedule/schedule_bloc.dart';
+import 'package:sia_app/bloc/transcript/transcript_bloc.dart';
 import 'package:sia_app/core/failures.dart';
 import 'package:sia_app/core/service_locator.dart';
 import 'package:sia_app/data/models/user_detail.dart';
 import 'package:sia_app/ui/pages/jadwal.dart';
 import 'package:sia_app/ui/pages/kehadiran.dart';
 import 'package:sia_app/ui/pages/setting.dart';
+import 'package:sia_app/ui/pages/transcript.dart';
 import 'package:sia_app/ui/widgets/captcha_dialog.dart';
 import 'package:sia_app/ui/widgets/shimmer.dart';
 
@@ -121,7 +124,10 @@ class _HomePageState extends State<HomePage> {
                               ),
                             );
                           },
-                          icon: Icons.calendar_month_rounded,
+                          icon: Icon(
+                            Icons.calendar_month_rounded,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                         PageSelector(
                           title: 'Kehadiran',
@@ -136,7 +142,26 @@ class _HomePageState extends State<HomePage> {
                               ),
                             );
                           },
-                          icon: Icons.check_circle_rounded,
+                          icon: Icon(
+                            Icons.check_circle_rounded,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                        PageSelector(
+                          title: 'Transkrip',
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider<TranscriptBloc>(
+                                  create: (context) => sl<TranscriptBloc>()
+                                    ..add(FetchTranscript()),
+                                  child: const TranscriptPage(),
+                                ),
+                              ),
+                            );
+                          },
+                          // icon: Icons.check_circle_rounded,
+                          icon: SvgPicture.asset('assets/icons/transcript.svg'),
                         ),
                       ],
                     ),
@@ -299,7 +324,7 @@ class PageSelector extends StatelessWidget {
   });
 
   final String title;
-  final IconData icon;
+  final Widget icon;
   final void Function() onTap;
 
   @override
@@ -318,10 +343,7 @@ class PageSelector extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             child: Center(
-              child: Icon(
-                icon,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+              child: icon,
             ),
           ),
           // const SizedBox(height: 8),
