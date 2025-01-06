@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
@@ -88,7 +90,7 @@ class TranscriptBloc extends Bloc<TranscriptEvent, TranscriptState> {
         await _localDBRepository.get(HiveKey.transcriptJson);
 
     return localTranscript != null
-        ? Transcript.fromJson(localTranscript)
+        ? Transcript.fromJson(json.decode(localTranscript))
         : null;
   }
 
