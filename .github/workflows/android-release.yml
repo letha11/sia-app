@@ -42,7 +42,7 @@ jobs:
         run: flutter test
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --dart-define=APP_ENV=prod
 
       - name: Build appBundle
         run: flutter build appbundle --release
